@@ -1,0 +1,13 @@
+首先第一步需要我们将项目克隆到本地，便于我们的修改
+本地与远程同步：
+打开终端
+第一步：
+cd 你的MiniBlogHub文件夹路径   比如我的就是C:\Users\lenovo\MiniBlogHub
+第二步：
+git add 你想要上传的文件   比如我的就是改了三个文件，就输入git add frontend/ backend/ database/
+第三步：
+git commit -m "feat: ........" 这里可以有一些注释，主要就是你做了什么改了什么，但不要太长 比如git commit -m "feat: 初步页面已经完成，可以进行注册、登录、发帖等功能"
+第四步： 
+git push origin main
+
+第一次上传可能会有身份验证登录情况，验证即可，然后再做一次
