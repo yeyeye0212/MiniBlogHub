@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - MiniBlogHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>用户注册</h1>
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" placeholder="请输入邮箱">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" placeholder="请输入密码">
+        </div>
+        <button id="registerBtn">注册</button>
+        <div class="nav" style="margin-top: 20px;">
+            <a href="login.html">已有账号？去登录</a>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // 注册按钮点击事件
+        document.getElementById("registerBtn").addEventListener("click", async () => {
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            // 简单校验
+            if (!username || !email || !password) {
+                alert("请填写完整信息！");
+                return;
+            }
+
+            // 调用注册接口
+            const result = await registerUser(username, email, password);
+            if (result.success) {
+                alert("注册成功！跳转到登录页");
+                window.location.href = "login.html";
+            } else {
+                alert("注册失败：" + result.message);
+            }
+        });
+    </script>
+</body>
+</html>

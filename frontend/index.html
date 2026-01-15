@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - MiniBlogHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <h1>MiniBlogHub 博客平台</h1>
+            <a href="index.html">首页</a>
+            <a href="login.html" id="loginLink">登录</a>
+            <a href="javascript:void(0)" id="publishLink" style="display: none;">发布文章</a>
+        </div>
+
+        <!-- 发布文章弹窗（默认隐藏） -->
+        <div id="publishModal" style="display: none; margin-bottom: 30px;">
+            <h2>发布新文章</h2>
+            <div class="form-group">
+                <label for="postTitle">文章标题</label>
+                <input type="text" id="postTitle" placeholder="请输入文章标题">
+            </div>
+            <div class="form-group">
+                <label for="postContent">文章内容</label>
+                <textarea id="postContent" rows="5" placeholder="请输入文章内容"></textarea>
+            </div>
+            <button id="publishBtn">发布</button>
+        </div>
+
+        <!-- 文章列表 -->
+        <div id="postList">
+            <p>加载中...</p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // 页面加载时执行
+        window.onload = async () => {
+            const userId = localStorage.getItem("userId");
+            // 如果已登录，显示发布按钮，隐藏登录链接
+            if (userId) {
+                document.getElementById("loginLink").style.display = "none";
+                document.getElementById("publishLink").style.display = "inline";
+            }
+
+            // 绑定发布文章链接点击事件
+            document.getElementById("publishLink").addEventListener("click", () => {
+                document.getElementById("publishModal").style.display = "block";
+            });
+
+            // 绑定发布按钮点击事件
+            document.getElementById("publishBtn").addEventListener("click", async () => {
+                const title = document.getElementById("postTitle").value;
+                const content = document.getElementById("postContent").value;
+                const userId = localStorage.getItem("userId");
+
+                if (!title || !content) {
+                    alert("请填写标题和内容！");
+                    return;
+                }
+
+                const result = await publishPost(title, content, userId);
+                if (result.success) {
+                    alert("发布成功！");
+                    // 重新加载文章列表
+                    loadPostList();
+                    // 清空输入框
+                    document.getElementById("postTitle").value = "";
+                    document.getElementById("postContent").value = "";
+                } else {
+                    alert("发布失败：" + result.message);
+                }
+            });
+
+            // 加载文章列表
+            await loadPostList();
+        };
+
+        // 加载文章列表函数
+        async function loadPostList() {
+            const result = await getPostList();
+            const postListEl = document.getElementById("postList");
+
+            if (result.success) {
+                const posts = result.data;
+                if (posts.length === 0) {
+                    postListEl.innerHTML = "<p>暂无文章，快来发布第一篇吧！</p>";
+                    return;
+                }
+
+                // 渲染文章列表
+                let html = "";
+                posts.forEach(post => {
+                    html += `
+                        <div class="post-item">
+                            <h3 class="post-title">${post.title}</h3>
+                            <div class="post-content">${post.content}</div>
+                            <div class="post-author">作者：${post.author_username}</div>
+                        </div>
+                    `;
+                });
+                postListEl.innerHTML = html;
+            } else {
+                postListEl.innerHTML = "<p>加载失败：" + result.message + "</p>";
+            }
+        }
+    </script>
+</body>
+</html>
