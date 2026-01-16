@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# 初始化Flask应用
+# 初始化Flask应用# 创建了一个叫"app"的控制中心
 app = Flask(__name__)
 
 # 配置跨域（解决前端调用后端接口的跨域问题）
@@ -14,7 +14,7 @@ def after_request(response):
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
-# 配置SQLite数据库路径（指向database文件夹）
+# 配置SQLite数据库路径（指向database文件夹-minibloghub.db）
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../database/minibloghub.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -131,7 +131,32 @@ def add_post():
     db.session.commit()
 
     return jsonify({'success': True, 'message': '发布成功'})
+# 5.修改用户名接口
+@app.route('/api/update-username', methods=['POST'])  # <-- 修正1：使用独立路径
+def update_username():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    new_username = data.get('new_username')
 
+    # 校验参数
+    if not user_id or not new_username:
+        return jsonify({'success': False, 'message': '参数不全'})
+
+    # 查找要修改的用户
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'success': False, 'message': '用户不存在'})
+
+    # 检查新用户名是否已被他人占用（关键修正）
+    existing_user = User.query.filter_by(username=new_username).first()  # <-- 修正2：按用户名查
+    if existing_user and existing_user.id != user.id:  # <-- 如果存在且不是自己
+        return jsonify({'success': False, 'message': '用户名已存在'})
+
+    # 更新用户名
+    user.username = new_username
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': '用户名修改成功'})
 # 启动应用
 if __name__ == '__main__':
     app.run(debug=True)
