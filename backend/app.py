@@ -1,162 +1,55 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-import os
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask,jsonify
+from auth import auth
+from flask_cors import CORS
 
-# 初始化Flask应用# 创建了一个叫"app"的控制中心
 app = Flask(__name__)
+CORS(app)   #启用CORS，允许前端跨域访问
 
-# 配置跨域（解决前端调用后端接口的跨域问题）
-@app.after_request
-def after_request(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    return response
+app.register_blueprint(auth,url_prefix='/api')
 
-# 配置SQLite数据库路径（指向database文件夹-minibloghub.db）
-db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../database/minibloghub.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 初始化数据库
-db = SQLAlchemy(app)
+def init_database():
+    import sqlite3
+    conn = sqlite3.connect('minibloghub.db')
+    cursor = conn.cursor()
 
-# 定义用户表模型
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)  # 存储加密后的密码
+    # 创建表（如果不存在）
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            email TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    # 创建文章表（如果不存在）
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            author_id INTEGER NOT NULL,
+            author_username TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (author_id) REFERENCES users (id)
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-# 定义文章表模型
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    author = db.relationship('User', backref=db.backref('posts', lazy=True))
-
-# 初始化数据库
-with app.app_context():
-    db.create_all()
-
-# 测试接口
 @app.route('/')
 def index():
-    return "MiniBlogHub后端已启动！数据库连接成功✅"
+    return jsonify({"message": "MiniBlogHub API 服务运行正常"})
 
-# 1. 注册接口
-@app.route('/api/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-
-    # 校验参数
-    if not username or not email or not password:
-        return jsonify({'success': False, 'message': '参数不全'})
-
-    # 检查用户名/邮箱是否已存在
-    if User.query.filter_by(username=username).first():
-        return jsonify({'success': False, 'message': '用户名已存在'})
-    if User.query.filter_by(email=email).first():
-        return jsonify({'success': False, 'message': '邮箱已存在'})
-
-    # 加密密码并创建用户
-    hashed_pwd = generate_password_hash(password, method='pbkdf2:sha256')
-    new_user = User(username=username, email=email, password=hashed_pwd)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({'success': True, 'message': '注册成功'})
-
-# 2. 登录接口
-@app.route('/api/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
-    # 校验参数
-    if not username or not password:
-        return jsonify({'success': False, 'message': '参数不全'})
-
-    # 查找用户
-    user = User.query.filter_by(username=username).first()
-    if not user or not check_password_hash(user.password, password):
-        return jsonify({'success': False, 'message': '用户名或密码错误'})
-
-    return jsonify({
-        'success': True,
-        'message': '登录成功',
-        'data': {'id': user.id, 'username': user.username}
-    })
-
-# 3. 获取文章列表接口
-@app.route('/api/posts', methods=['GET'])
-def get_posts():
-    posts = Post.query.join(User).all()
-    post_list = []
-    for post in posts:
-        post_list.append({
-            'id': post.id,
-            'title': post.title,
-            'content': post.content,
-            'user_id': post.user_id,
-            'author_username': post.author.username
-        })
-    return jsonify({'success': True, 'data': post_list})
-
-# 4. 发布文章接口
-@app.route('/api/posts', methods=['POST'])
-def add_post():
-    data = request.get_json()
-    title = data.get('title')
-    content = data.get('content')
-    user_id = data.get('user_id')
-
-    # 校验参数
-    if not title or not content or not user_id:
-        return jsonify({'success': False, 'message': '参数不全'})
-
-    # 检查用户是否存在
-    if not User.query.get(user_id):
-        return jsonify({'success': False, 'message': '用户不存在'})
-
-    # 创建文章
-    new_post = Post(title=title, content=content, user_id=user_id)
-    db.session.add(new_post)
-    db.session.commit()
-
-    return jsonify({'success': True, 'message': '发布成功'})
-# 5.修改用户名接口
-@app.route('/api/update-username', methods=['POST'])  # <-- 修正1：使用独立路径
-def update_username():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    new_username = data.get('new_username')
-
-    # 校验参数
-    if not user_id or not new_username:
-        return jsonify({'success': False, 'message': '参数不全'})
-
-    # 查找要修改的用户
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({'success': False, 'message': '用户不存在'})
-
-    # 检查新用户名是否已被他人占用（关键修正）
-    existing_user = User.query.filter_by(username=new_username).first()  # <-- 修正2：按用户名查
-    if existing_user and existing_user.id != user.id:  # <-- 如果存在且不是自己
-        return jsonify({'success': False, 'message': '用户名已存在'})
-
-    # 更新用户名
-    user.username = new_username
-    db.session.commit()
-
-    return jsonify({'success': True, 'message': '用户名修改成功'})
-# 启动应用
 if __name__ == '__main__':
+    init_database()
+    print("数据库已经初始化")
+    print("服务器启动：http://127.0.0.1:5000/")
     app.run(debug=True)
+
+
+
+
+

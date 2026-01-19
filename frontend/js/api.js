@@ -9,9 +9,15 @@ async function registerUser(username, email, password) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({
+                username: username,
+                email:email,
+                password: password,
+                password2:password
+            }),
         });
-        return await response.json();
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error("注册失败：", error);
         return { success: false, message: "网络错误" };
@@ -28,7 +34,8 @@ async function loginUser(username, password) {
             },
             body: JSON.stringify({ username, password }),
         });
-        return await response.json();
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error("登录失败：", error);
         return { success: false, message: "网络错误" };
@@ -39,7 +46,8 @@ async function loginUser(username, password) {
 async function getPostList() {
     try {
         const response = await fetch(`${BASE_URL}/api/posts`);
-        return await response.json();
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error("获取文章失败：", error);
         return { success: false, message: "网络错误" };
@@ -54,9 +62,14 @@ async function publishPost(title, content, userId) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ title, content, user_id: userId }),
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                author: username
+            }),
         });
-        return await response.json();
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error("发布文章失败：", error);
         return { success: false, message: "网络错误" };

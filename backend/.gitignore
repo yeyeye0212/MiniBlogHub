@@ -1,0 +1,8 @@
+# 创建 .gitignore 文件
+echo ".idea/" > .gitignore
+echo "__pycache__/" >> .gitignore
+echo "*.pyc" >> .gitignore
+echo "venv/" >> .gitignore
+echo "env/" >> .gitignore
+echo ".env" >> .gitignore
+echo "minibloghub.db" >> .gitignore  # 数据库文件应该忽略，让每个开发者自己初始化
