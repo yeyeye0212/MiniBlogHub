@@ -1,0 +1,23 @@
+1.register.html- 注册页面  
+2.login.html- 登录页面
+3.create_post.html- 发布文章页面
+4.js/api.js- API调用函数
+  
+xu--
+   1/19-update auth.py(register/login API)
+                app.py(main enter)
+                2 database_data.py
+                a test.py   
+  in xu/func2 branch
+
+  if anyone want to update the project,you need to cmd:
+   " git clone https://github.com/yeyeye0212/MiniBlogHub.git
+   " cd [local address of progress]
+   " git checkout xu/func2
+   " git pull origin xu/func2"
+
+  then,you need to create your own branch instead of updating to main branch,such as:"git checkout -b [your branch's name]"
+
+
+  后端未完成：文章发布 
+    如果写完 记得把你的branch 和 xu/func2 合并
