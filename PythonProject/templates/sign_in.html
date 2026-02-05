@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elab多人博客ξ( ✿＞◡❛)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='outside.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            position: absolute;
+            color: rgb(51, 97, 153);
+            font-size: 50px;
+            text-align: center;
+            top: 30px;
+            left: 23%;
+            font-family: 'Times New Roman', Times, serif;
+            z-index: 1;
+        }
+
+        .top-container {
+            position: relative;
+            width: 1680px;
+            height: 175px;
+            top: 50px;
+            margin-bottom: 0;
+        }
+
+        .top {
+            position: absolute;
+            /* 绝对定位，和.top2重叠在容器内 */
+            left: 0;
+            top: 5px;
+            width: 1680px;
+            height: 170px;
+            background-color: rgb(205, 235, 244);
+            overflow: visible;
+            animation: identifier 2.5s ease-in-out infinite alternate;
+            animation-play-state: paused;
+            z-index: 0;
+            border-radius: 5px, 5px, 5px, 5px;
+        }
+
+        .top2 {
+            position: absolute;
+            /* 绝对定位，贴在.top右侧 */
+            right: 0;
+            /* 固定在容器右侧 */
+            top: 5px;
+            width: 0;
+            /* 初始宽度0，和动画起始值一致 */
+            height: 170px;
+            background-color: red;
+            overflow: visible;
+            animation: identifier2 2.5s ease-in-out infinite alternate;
+            animation-play-state: paused;
+            z-index: 0;
+            border-radius: 5px, 5px, 5px, 5px;
+        }
+
+        .top-container:hover .top,
+        .top-container:hover .top2 {
+            animation-play-state: running;
+        }
+
+        @keyframes identifier {
+            0% {
+                width: 1680px;
+                background-color: rgb(194, 234, 246);
+            }
+
+            100% {
+                width: 1400px;
+                background-color: rgb(79, 208, 248);
+            }
+        }
+
+        @keyframes identifier2 {
+            0% {
+                width: 0;
+                background-color: rgb(255, 176, 176);
+            }
+
+            100% {
+                width: 280px;
+                background-color: rgb(242, 0, 0);
+            }
+        }
+
+        .separator {
+            position: relative;
+            top: 35px;
+            /* 适配容器位置 */
+            color: rgb(2, 164, 245);
+            font-size: 30px;
+            line-height: 1;
+            margin: 0 auto;
+            /* 居中 */
+            white-space: nowrap;
+            font-weight: 1000;
+            width: fit-content;
+        }
+
+        .biaoti {
+            position: absolute;
+            font-size: 30px;
+            left: 15px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            color:rgb(19, 78, 150);
+        }
+
+        .box {
+            display: flex;
+            width: 1680px;
+            height: 680px;
+            position: relative;
+            top: 38px;
+            margin: 0 auto;
+            /* 居中 */
+            background-color: aliceblue;
+            margin-left: 0;
+        }
+
+        .img {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            opacity: 0;
+            transition: all 3.0s;
+        }
+
+        .img:nth-child(1) {
+            opacity: 1;
+        }
+
+        .change_left {
+            position: relative;
+            width: 50px;
+            height: 70px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: darkgrey;
+            text-align: center;
+            top: 350px;
+            border-radius: 0 5px 5px 0;
+            line-height: 60px;
+            font-size: 50px;
+            left: 10px;
+            cursor: pointer;
+        }
+
+        .change_left:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
+
+        .change_right {
+            position: relative;
+            width: 50px;
+            height: 70px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: darkgrey;
+            left: 860px;
+            text-align: center;
+            top: 350px;
+            border-radius: 5px 0 0 5px;
+            line-height: 60px;
+            font-size: 50px;
+            cursor: pointer;
+        }
+
+        .change_right:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dot>ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .dot {
+            position: absolute;
+            bottom: 55px;
+            left: 43%;
+        }
+
+        .dot li {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: white;
+            float: left;
+            margin-right: 30px;
+            cursor: pointer;
+        }
+
+        .dot li:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .forward {
+            position: fixed;
+            z-index: 999;
+            width: 1680px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: visible;
+            left: 0%;
+            margin-left: 0;
+        }
+
+        .forward_word {
+            position: absolute;
+            color: white;
+            font-size: 18px;
+            text-align: left;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            margin-left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="forward">
+        <h6 class="forward_word">在这里，让科创飞起来</h6>
+    </div>
+
+    <div class="top-container">
+        <div class="top">
+            <h1>Hi！Welcome to Elab多人博客ξ( ✿＞◡❛)！</h1>
+            <img src="{{url_for('static',filename='image/picture.png')}}" width="180px" height="180px">
+        </div>
+        <div class="top2"></div>
+    </div>
+
+    <h5 class="separator">——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— —</h5>
+
+    <div class="box">
+        <div class="img"><img src="{{ url_for('static', filename='image/elab.jpeg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab2.jpeg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab3.jpg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab4.jpg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab5.jpg') }}" width="950px" height="600px"></div>
+
+        <div class="change_left">&lt;</div>
+        <div class="change_right">&gt;</div>
+        <div class="dot">
+            <ul>
+                <li class="push"></li>
+                <li class="push"></li>
+                <li class="push"></li>
+                <li class="push"></li>
+                <li class="push"></li>
+            </ul>
+        </div>
+        <h2 class="biaoti" font-weight="bold">团队剪影</h2>
+        <form class="form" method="POST" action="{{url_for('sign_in')}}">
+            <p class="form-title22">注册你的博客账号</p>
+            <div class="input-container2">
+                <input type="text" name='username' placeholder="输入用户名" class="username">
+                <span>
+                </span>
+            </div>
+            <div class="input-container2">
+                <input type="email" name='email' placeholder="输入邮箱">
+            </div>
+            <div class="input-container2">
+                <input type="password" name='password' placeholder="输入密码">
+            </div>
+            <div class="input-container2">
+                <input type="password" name='confirm_password' placeholder="再次输入密码">
+            </div>
+            <div class="input-container3">
+                <input type="text" name='placeholder' placeholder="输入验证码">
+            </div>
+            <button type="submit" class="submit2">
+                注册
+            </button>
+            <p> </p>
+            <p> </p>
+            <p class="signup-link">
+                已有账户？
+                <a href="{{ url_for('log_in') }}">登录获得更多精彩(｡・ω・｡)</a>
+            </p>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="{{url_for('static',filename='jquery-4.0.0.min.js')}}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var index = 0;//标记图片索引
+            var timer;
+            show();
+            $(".push").eq(0).css("background-color", "rgba(0, 0, 0,0.5)");
+
+            function show() {
+                timer = setInterval(function () {
+                    index++;//索引++
+                    index %= 5;//写$(".img").length也行，跟5一样的
+                    $(".img").css("opacity", "0");//全设为不见的
+                    $(".img").eq(index).css("opacity", "1");
+                    $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                    $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                }, 5000);
+            }
+
+            $(".change_left").click(function () {
+                clearInterval(timer);//定时器清除
+                index--;
+                if (index == -1) index = 4;
+                index %= 5;//写$(".img").length也行，跟5一样的
+                $(".img").css("opacity", "0");//全设为不见的
+                $(".img").eq(index).css("opacity", "1");
+                $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                show();
+            })
+
+            $(".change_right").click(function () {
+                clearInterval(timer);
+                index++;
+                index %= 5;//写$(".img").length也行，跟5一样的
+                $(".img").css("opacity", "0");//全设为不见的
+                $(".img").eq(index).css("opacity", "1");
+                $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                show();
+            })
+
+            $(".push").click(function () {
+                clearInterval(timer);
+                index = $(this).index();
+                $(".img").css("opacity", "0");//全设为不见的
+                $(".img").eq(index).css("opacity", "1");
+                $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                show();
+            })
+        })
+    </script>
+</body>
+
+</html>
