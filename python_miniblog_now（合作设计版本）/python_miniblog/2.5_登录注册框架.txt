@@ -1,0 +1,11 @@
+项目根目录/
+├── app.py              # 主程序文件
+├── config.py           # 配置文件
+├── extensions.py       # 扩展文件
+├── models.py           # 数据模型
+├── requirements.txt    # 依赖包
+├── templates/          # 模板目录
+│   ├── log_in.html    # 登录页面
+│   └── sign_in.html   # 注册页面
+└── static/            # 静态文件目录
+    └── style.css      # 样式文件
