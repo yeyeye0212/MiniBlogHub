@@ -181,30 +181,66 @@
     <div>
         <label>
             <input type="radio" name="radio" >
-            <span onclick="location.href='{{ url_for('page') }}; event.stopPropagation()">技术求助</span>
+            <span onclick="location.href='{{ url_for('page') }}'; event.stopPropagation()">技术求助</span>
         </label>
         <label>
             <input type="radio" name="radio" >
-            <span onclick="location.href='{{ url_for('page2') }}; event.stopPropagation()">日常休闲</span>
+            <span onclick="location.href='{{ url_for('page2') }}'; event.stopPropagation()">日常休闲</span>
         </label>
         <label>
             <input type="radio" name="radio" checked="">
-            <span onclick="location.href='{{ url_for('page3') }}; event.stopPropagation()">组队寻人</span>
+            <span onclick="location.href='{{ url_for('page3') }}'; event.stopPropagation()">组队寻人</span>
         </label>
     </div>
 </div>
-    <div class="blog">
-        <h2 class="blog-title">最新帖子-技术求助</h2>
-        <div class="blog-content">
-            <h4 class="title">求助</h4>
-            <h5 class="author">发布者：zlt</h5>
-            <h5 class="time">发布时间：2022-01-01 12:00:00</h5>
-            <p class="box-content">
-                请问有什么办法可以解决我的问题？
-            </p>
-            <img src="/static/image/look.jpg" width="40px" height="40px" class="biaozhi2">
+    <!-- 彻底重构博客标题+帖子区域，解决绝对定位导致的间距失效问题 -->
+<div class="blog" style="
+    margin-left: 20px;
+    margin-top: 10px;
+    width: calc(100% - 450px);
+    padding: 20px;
+    background: #e8f4fc;
+    border-radius: 8px;
+    position: relative; /* 父容器相对定位，让内部元素正常布局 */
+">
+    <!-- 重新设置标题：取消绝对定位，用正常流布局控制间距 -->
+    <h2 style="
+        font-size: 30px;  /* 保留你原来的字体大小 */
+        font-family: 'Times New Roman', Times, serif;
+        color:rgb(11, 138, 242);
+        margin: 0 0 30px 0; /* 关键：正常流的下边距，100%生效 */
+        padding: 0;
+        position: static; /* 取消绝对定位，回到正常文档流 */
+    ">最新帖子-组队寻人</h2>
+
+    {% if posts %}
+        {% for post in posts %}
+            <div style="
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            ">
+                <h4 style="font-size: 20px; color: #0000EE; margin: 0 0 10px 0;">
+                    <a href="{{ url_for('post_detail', post_id=post.id) }}" style="text-decoration: none;">{{ post.title }}</a>
+                </h4>
+                <p style="color: #666; margin: 0 0 10px 0;">
+                    {% if post.intro %}{{ post.intro }}{% else %}{{ post.content[:100] }}...{% endif %}
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <img src="/static/image/look.jpg" width="30" height="30" style="border-radius: 50%;">
+                    <span style="color: #0b8af2; font-weight: bold;">发布者：{{ post.author.username }}</span>
+                    <span style="color: #666;">发布时间：{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="background: white; border-radius: 8px; padding: 20px; text-align: center; color: #999;">
+            暂无组队寻人类帖子，快去发布第一条吧！
         </div>
-    </div>
+    {% endif %}
+</div>
 
 
     <script>

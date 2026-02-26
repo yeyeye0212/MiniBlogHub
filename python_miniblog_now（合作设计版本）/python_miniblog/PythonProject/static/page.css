@@ -73,6 +73,19 @@
     border-radius: 5px;
 }
 
+.blog_show{
+    position: absolute;
+    height: 100%;
+    width: 1335px;
+    left: 320px;
+    animation: change 1s linear 0s 1 forwards;
+    margin-left: 20px;
+    border-radius: 5px;
+    top: 80px;
+    background-color:rgb(187, 224, 249);
+}
+
+
 .blog-content {
     position: absolute;
     height: 150px;
@@ -213,3 +226,4 @@ label:last-child span {
     top:50px;
     left:20px;
 }
+

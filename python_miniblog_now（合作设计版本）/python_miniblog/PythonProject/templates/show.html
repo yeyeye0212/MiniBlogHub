@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎进入Elab多人博客ξ( ✿＞◡❛)</title>
+    <link rel="stylesheet" href="page.css">
+    <link rel="stylesheet" href="show.css">
+    <style>
+        @keyframes change {
+            0% {
+                top: 300px;
+                background-color: rgb(228, 240, 248);
+            }
+
+            100% {
+                top: 80px;
+                background-color: rgb(187, 224, 249);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            z-index: 0;
+        }
+
+        .forward {
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            left: 0;
+            margin: 0;
+            z-index: 1;
+        }
+
+        .forward_word {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            z-index: 2;
+        }
+
+        .top {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            z-index: 3;
+        }
+
+        .skip {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .skip li {
+            color: white;
+        }
+
+        .skip li a {
+            /*让点击后不会变成紫色的*/
+            color: white;
+            text-decoration: none;
+        }
+
+        .skip_post {
+
+            text-decoration: none;
+        }
+
+        .change {
+            text-decoration: none;
+            color: black;
+        }
+
+        .my-box {
+            width: 300px;
+            height: 400px;
+            background-color: rgb(91, 165, 250);
+            position: absolute;
+            border-radius: 10px;
+            top: 70px;
+            z-index: 3;
+        }
+
+        .silk {
+            width: 50px;
+            height: 150px;
+            z-index: 5;
+            background-color: sienna;
+            left: 120px;
+            position: fixed;
+        }
+
+        .gongpai {
+            height: 100%;
+            width: 320px;
+            position: fixed;
+            z-index: 1;
+            background-color: rgb(141, 220, 244);
+            border-radius: 0px 0px 10px 10px;
+            top: 50px;
+        }
+
+        .open1 {
+            height: 30px;
+            width: 100px;
+            background-color: rgb(141, 220, 244);
+            top: 120px;
+            left: 95px;
+            z-index: 4;
+            position: absolute;
+            border-radius: 10px;
+        }
+
+        .touxiang {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            object-fit: cover;
+            object-position: center;
+            top: 100px;
+            left: 70px;
+            border: 2px solid white;
+        }
+
+        .biaozhi {
+            position: absolute;
+            top: 480px;
+            left: 10%;
+        }
+
+        .blog-title {
+            font-size: 30px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(11, 138, 242);
+            top: 5px;
+            left: 10px;
+            position: absolute;
+        }
+
+        .biaozhi2 {
+            position: absolute;
+            bottom: 5px;
+            left: 85%;
+            border-radius: 75px;
+            top: 2%;
+        }
+
+        .skip_post {
+            text-decoration: none;
+            color: white;
+        }
+
+        #textContent {
+            font-size: 23px;
+            /* 基础字号，可根据你的需求改 */
+            line-height: 1.8;
+            /* 行高倍数，可调整 */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="forward">
+        <h6 class="forward_word">畅享所言</h6>
+        <div class="top">
+            <ul class="skip" type="none">
+                <li><a href="page.html" id="move_for">广场 </a><span>|</span></li>
+                <li><a href="page.html" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="my_information.html" id="move_for3">关于我 </a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!--工牌（个人信息）-->
+    <div class="gongpai">
+        <div class="silk"></div>
+        <div class="open1"> </div>
+        <div class="my-box">
+            <img src="image/look.jpg" class="touxiang">
+        </div>
+        <h3 class="name">昵称：zlt</h3>
+        <h3 class="group">组别：极创组</h3>
+        <h3 class="grade">年级：大一小登</h3>
+        <img src="./image/picture.png" width="250px" height="250px" class="biaozhi">
+        <button onclick="location.href='post.html'">
+            <h2 class="post">发布你的帖子吧！</h2>
+        </button>
+    </div>
+
+
+    <div class="blog_show">
+        <button class="button_back">
+            <a href="page.html" class="skip_post">返回</a>
+        </button>
+        <h2 class="blog-title">全文展示</h2>
+        <div class="blog-content-ani">
+            <h4 class="title_big">求助</h4>
+            <h5 class="author" style="left:1%;font-size:21px;">发布者：zlt</h5>
+            <h5 class="time" style="left:25%;font-size:21px;">发布时间：2022-01-01 12:00:00</h5>
+            <p class="box-content-show">
+                请问有什么办法可以解决我的问题？
+            </p>
+            <div class="blog-content_post" id="textContent"></div>
+            <img src="image/look.jpg" width="130px" height="130px" class="biaozhi2">
+
+
+            <label class="container">
+                <input type="checkbox">
+                <svg id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <path
+                        d="M29.845,17.099l-2.489,8.725C26.989,27.105,25.804,28,24.473,28H11c-0.553,0-1-0.448-1-1V13  c0-0.215,0.069-0.425,0.198-0.597l5.392-7.24C16.188,4.414,17.05,4,17.974,4C19.643,4,21,5.357,21,7.026V12h5.002  c1.265,0,2.427,0.579,3.188,1.589C29.954,14.601,30.192,15.88,29.845,17.099z"
+                        id="XMLID_254_"></path>
+                    <path
+                        d="M7,12H3c-0.553,0-1,0.448-1,1v14c0,0.552,0.447,1,1,1h4c0.553,0,1-0.448,1-1V13C8,12.448,7.553,12,7,12z   M5,25.5c-0.828,0-1.5-0.672-1.5-1.5c0-0.828,0.672-1.5,1.5-1.5c0.828,0,1.5,0.672,1.5,1.5C6.5,24.828,5.828,25.5,5,25.5z"
+                        id="XMLID_256_"></path>
+                </svg>
+            </label>
+
+            <label class="container2">
+                <input type="checkbox">
+                <svg height="24px" id="Layer_1" version="1.2" viewBox="0 0 24 24" width="24px" xml:space="preserve"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g>
+                        <g>
+                            <path
+                                d="M9.362,9.158c0,0-3.16,0.35-5.268,0.584c-0.19,0.023-0.358,0.15-0.421,0.343s0,0.394,0.14,0.521    c1.566,1.429,3.919,3.569,3.919,3.569c-0.002,0-0.646,3.113-1.074,5.19c-0.036,0.188,0.032,0.387,0.196,0.506    c0.163,0.119,0.373,0.121,0.538,0.028c1.844-1.048,4.606-2.624,4.606-2.624s2.763,1.576,4.604,2.625    c0.168,0.092,0.378,0.09,0.541-0.029c0.164-0.119,0.232-0.318,0.195-0.505c-0.428-2.078-1.071-5.191-1.071-5.191    s2.353-2.14,3.919-3.566c0.14-0.131,0.202-0.332,0.14-0.524s-0.23-0.319-0.42-0.341c-2.108-0.236-5.269-0.586-5.269-0.586    s-1.31-2.898-2.183-4.83c-0.082-0.173-0.254-0.294-0.456-0.294s-0.375,0.122-0.453,0.294C10.671,6.26,9.362,9.158,9.362,9.158z">
+                            </path>
+                        </g>
+                    </g>
+                </svg>
+            </label>
+            <button_squ id="commentBtn">
+                <h2 class="post2">评论</h2>
+            </button_squ>
+
+            <div class="comment-form" id="commentForm">
+                <textarea class="comment-input" placeholder="请输入你的评论..."></textarea>
+                <button class="submit-btn" id="submitComment">提交评论</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var move = document.getElementById("move_for");
+        move.onmouseover = function () {
+            move.style.color = "rgb(146, 222, 245)";
+            move.style.fontWeight = 900;
+        }
+        move.onmouseout = function () {
+            move.style.color = "white";
+            move.style.fontWeight = "normal";
+        }
+
+        let move2 = document.getElementById("move_for2");
+        move2.onmouseover = function () {
+            move2.style.color = "rgb(146, 222, 245)";
+        }
+        move2.onmouseout = function () {
+            move2.style.color = "white";
+        }
+
+        let move3 = document.getElementById("move_for3");
+        move3.onmouseover = function () {
+            move3.style.color = "rgb(146, 222, 245)";
+        }
+        move3.onmouseout = function () {
+            move3.style.color = "white";
+        }
+
+        // 1. 后端返回的文本
+        const backendText = `请问有什么办法可以解决我的问题？我现在遇到了一个技术难题，急需要一块stm32开发板，有人可以提供一块吗，非常感谢！`;
+
+        // 2. 核心函数：分割文本+计算行数
+        function splitTextByLength(text, charCount = 35) {
+            let result = '';
+            let lineCount = 0;
+            for (let i = 0; i < text.length; i += charCount) {
+                const line = text.substring(i, i + charCount);
+                result += line + (i + charCount < text.length ? '<br>' : '');
+                lineCount++;
+            }
+            return { processedText: result, lineCount: lineCount };
+        }
+
+        // 3. 计算段落高度的函数
+        function calcTextHeight(lineCount) {
+            const fontSize = 23;
+            const lineHeight = 1.8;
+            const singleLineHeight = fontSize * lineHeight;
+            const textTotalHeight = lineCount * singleLineHeight;
+            return textTotalHeight;
+        }
+
+        // 4. 初始化：仅控制.blog-content-ani的动画
+        function initAnimation() {
+            // 步骤1：分割文本并插入页面
+            const { processedText, lineCount } = splitTextByLength(backendText, 35);
+            document.getElementById('textContent').innerHTML = processedText;
+
+            // 步骤2：计算段落高度
+            const textHeight = calcTextHeight(lineCount);
+            console.log('段落行数：', lineCount);
+            console.log('段落高度：', textHeight + 'px');
+
+            // 步骤3：仅获取小盒子元素（删掉大盒子相关）
+            const blogContentAniBox = document.querySelector('.blog-content-ani');
+            const   author = document.querySelector('.author');
+
+            const   time = document.querySelector('.time');
+            const   container = document.querySelector('.container');
+             const   container2 = document.querySelector('.container2');
+            // const   button_squ = document.querySelector('.container2');
+
+
+
+            // 步骤4：计算小盒子的最终高度
+            const baseHeight = 200; // 小盒子基础高度（非文本区域）
+            const finalContentAniHeight = baseHeight + textHeight; // 小盒子最终高度
+            const base=150;
+            // 步骤5：仅触发小盒子的动画
+            blogContentAniBox.style.height = `${finalContentAniHeight}px`;
+            blogContentAniBox.style.width = '1250px'; // 宽度从1200px过渡到1250px
+            author.style.top=`${textHeight+base}px`;
+            time.style.top=`${textHeight+base}px`;
+            container.style.top=`${textHeight+base}px`;
+            container2.style.top=`${textHeight+base-5}px`;
+            //button_squ.style.top=`${textHeight+base-5}px`;
+            // 打印小盒子最终高度，方便调试
+            console.log('小盒子最终高度：', finalContentAniHeight + 'px');
+        }
+
+        // 页面加载完成后执行动画初始化
+        window.onload = initAnimation;
+
+
+        // 1. 获取元素
+        const commentBtn = document.getElementById('commentBtn'); // 评论按钮
+        const commentForm = document.getElementById('commentForm'); // 评论表单
+        const blogContentAni = document.querySelector('.blog-content-ani'); // 要加高的小盒子
+        let isFormShow = false; // 标记表单是否显示，避免重复加高
+
+        // 2. 绑定按钮点击事件
+        commentBtn.addEventListener('click', function () {
+            // 2.1 切换表单显示/隐藏状态
+            if (!isFormShow) {
+                // 显示表单 + 增加盒子高度
+                commentForm.style.display = 'block';
+                // 计算需要增加的高度：表单高度（约120px）+ 间距，可根据需要调整
+                const currentHeight = parseInt(window.getComputedStyle(blogContentAni).height);
+                blogContentAni.style.height = `${currentHeight + 150}px`; // 加高150px
+                isFormShow = true;
+                commentBtn.innerHTML = '<h2 class="post2">收起评论</h2>'; // 按钮文字切换
+            } else {
+                // 隐藏表单 + 恢复盒子高度
+                commentForm.style.display = 'none';
+                const currentHeight = parseInt(window.getComputedStyle(blogContentAni).height);
+                blogContentAni.style.height = `${currentHeight - 150}px`; // 减矮150px
+                isFormShow = false;
+                commentBtn.innerHTML = '<h2 class="post2">评论</h2>'; // 恢复按钮文字
+            }
+
+        });
+
+        // 3. 可选：表单提交事件（示例）
+        const submitComment = document.getElementById('submitComment');
+        submitComment.addEventListener('click', function () {
+            const commentText = document.querySelector('.comment-input').value;
+            if (commentText.trim() === '') {
+                alert('请输入评论内容！');
+                return;
+            }
+            // 这里可以写提交评论的逻辑（比如发送到后端）
+            
+            // 提交后清空输入框
+            document.querySelector('.comment-input').value = '';
+        });
+    </script>
+</body>
+
+</html>

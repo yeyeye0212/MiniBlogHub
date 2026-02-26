@@ -274,3 +274,10 @@ input:focus, textarea:focus, button:focus {
   right: 15%;
   animation-delay: .3s;
 }
+
+.blog-content{
+    font-size:22px;
+    position:absolute;
+    top:70px;
+    left:20px;
+}

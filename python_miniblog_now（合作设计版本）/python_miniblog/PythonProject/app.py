@@ -145,7 +145,7 @@ def page2():
 def page3():
     if 'username' not in session:
         return redirect(url_for('log_in'))
-    posts=Post.query.filter_by(category='组队请求').all()
+    posts=Post.query.filter_by(category='组队寻人').all()
     return render_template('page3.html',posts=posts,username=session.get('username'))
 
 # @app.route('/create_tables')
@@ -248,6 +248,8 @@ def my_information():
     if user:
         return render_template(
             'my_information.html',
+            username=username,
+            group='极创组',
             email=user.email,
             reg_time=user.created_at.strftime('%Y-%m-%d'),
             #需要在user模型添加signature字段
