@@ -114,7 +114,7 @@
             left: 15px;
             font-family: 'Times New Roman', Times, serif;
             margin: 0;
-            color:rgb(19, 78, 150);
+            color: rgb(19, 78, 150);
         }
 
         .box {
@@ -231,14 +231,16 @@
             margin: 0;
             margin-left: 0;
         }
-        /* 提示框样式：固定在表单上方，和表单保留10px距离 */
+
+        /* 提示框样式：和注册页完全一致 */
         #flash-container {
             position: absolute;
             right: 190px;
-            top: 5px; /* 表单top是50px，这里40px刚好比表单上沿高10px */
-            width: 300px; /* 和表单宽度一致 */
-            z-index: 10; /* 确保在表单上方显示 */
+            top: 5px;
+            width: 300px;
+            z-index: 10;
         }
+
         .flash-message {
             padding: 10px 20px;
             margin: 0 auto;
@@ -248,14 +250,16 @@
             width: 100%;
             text-align: center;
             line-height: 1.5;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: none;
         }
+
         .flash-error {
             background-color: #ffebee;
             color: #c62828;
             border: 1px solid #ffcdd2;
         }
+
         .flash-success {
             background-color: #e8f5e9;
             color: #2e7d32;
@@ -272,7 +276,7 @@
     <div class="top-container">
         <div class="top">
             <h1>Hi！Welcome to Elab多人博客ξ( ✿＞◡❛)！</h1>
-            <img src="{{url_for('static',filename='image/picture.png')}}" width="180px" height="180px">
+            <img src="{{ url_for('static',filename='image/picture.png') }}" width="180px" height="180px">
         </div>
         <div class="top2"></div>
     </div>
@@ -285,7 +289,6 @@
         <div class="img"><img src="{{ url_for('static', filename='image/elab3.jpg') }}" width="950px" height="600px"></div>
         <div class="img"><img src="{{ url_for('static', filename='image/elab4.jpg') }}" width="950px" height="600px"></div>
         <div class="img"><img src="{{ url_for('static', filename='image/elab5.jpg') }}" width="950px" height="600px"></div>
-
         <div class="change_left">&lt;</div>
         <div class="change_right">&gt;</div>
         <div class="dot">
@@ -301,25 +304,25 @@
 
         <div id="flash-container"></div>
 
-        <form class="form" method="POST" action="{{url_for('sign_in')}}">
-            <p class="form-title22">注册你的博客账号</p>
+
+        <form class="form" method="POST" action="{{ url_for('reset_password') }}">
+            <p class="form-title22">重置你的博客账号密码</p>
             <div class="input-container2">
                 <input type="text" name='username' placeholder="输入用户名" class="username">
-                <span>
-                </span>
+                <span></span>
             </div>
             <div class="input-container2">
                 <input type="email" name='email' placeholder="输入邮箱" class="email">
             </div>
             <div class="input-container2">
-                <input type="password" name='password' placeholder="输入密码" class="pwd">
+                <input type="password" name='password' placeholder="输入新密码" class="pwd">
             </div>
             <div class="input-container2">
-                <input type="password" name='confirm_password' placeholder="再次输入密码" class="confirm-pwd">
+                <input type="password" name='confirm_password' placeholder="再次输入新密码" class="confirm-pwd">
             </div>
             <div class="input-container3">
-                <input type="text" name='verification_code' placeholder="请输入验证码" required class="verify-code">
-
+                <input type="text" name='verification_code' placeholder="输入验证码" required class="verify-code">
+                <!-- 2. 验证码显示（和注册页一致） -->
                 <span id="code_show" style="
                  color: rgb(19, 78, 150 );
                 font-weight: bold;
@@ -336,25 +339,21 @@
                 position:absolute;
                 " onclick="window.location.reload()">{{ verification_code }}</span>
             </div>
+            <!-- 3. 修复重置按钮：去掉a标签，改为纯提交按钮（和注册页一致） -->
             <button type="submit" class="submit2">
-                注册
+                重置
             </button>
             <p> </p>
             <p> </p>
-            <p class="signup-link">
+            <p class="signup-link" style="top:75%; position:absolute;left:17%;">
                 已有账户？
                 <a href="{{ url_for('log_in') }}">登录获得更多精彩(｡・ω・｡)</a>
             </p>
-            <!--忘记密码部分 -->
-             <p class="forget">
-                <!--要搭一个忘记密码路由 -->
-                <a href="{{ url_for('forget') }}">忘记密码？</a>
-            </p>
-        </form>
         </form>
     </div>
 
-    <script type="text/javascript" src="{{url_for('static',filename='jquery-4.0.0.min.js')}}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static',filename='jquery-4.0.0.min.js') }}"></script>
     <script type="text/javascript">
         $(function () {
             var index = 0;//标记图片索引
@@ -407,68 +406,88 @@
             })
         })
 
-        // ========== 提示框函数 + 表单验证逻辑 ==========
-        function showFlashMessage(message, category = 'success') {
-            // 先清空原有提示框
-            $('#flash-container').empty();
-            // 创建提示框元素
-            const flashDiv = document.createElement('div');
-            flashDiv.className = `flash-message flash-${category}`;
-            flashDiv.textContent = message;
+//提示框函数 + 表单验证逻辑
+function showFlashMessage(message, category = 'success') {
+    // 先清空原有提示框
+    $('#flash-container').empty();
+    // 创建提示框元素
+    const flashDiv = document.createElement('div');
+    flashDiv.className = `flash-message flash-${category}`;
+    flashDiv.textContent = message;
 
-            // 添加到表单上方的容器
-            const container = document.getElementById('flash-container');
-            container.appendChild(flashDiv);
+    // 添加到表单上方的容器
+    const container = document.getElementById('flash-container');
+    container.appendChild(flashDiv);
 
-            // 显示提示框
-            flashDiv.style.display = 'block';
-            flashDiv.style.opacity = 0;
-            setTimeout(() => {
-                flashDiv.style.opacity = 1;
-                flashDiv.style.transition = 'opacity 0.3s ease';
-            }, 10);
+    // 显示提示框
+    flashDiv.style.display = 'block';
+    flashDiv.style.opacity = 0;
+    setTimeout(() => {
+        flashDiv.style.opacity = 1;
+        flashDiv.style.transition = 'opacity 0.3s ease';
+    }, 10);
 
-            // 3秒后自动隐藏提示框
-            setTimeout(() => {
-                flashDiv.style.opacity = 0;
-                setTimeout(() => flashDiv.remove(), 300);
-            }, 3000);
-        }
+    // 3秒后自动隐藏提示框
+    setTimeout(() => {
+        flashDiv.style.opacity = 0;
+        setTimeout(() => flashDiv.remove(), 300);
+    }, 3000);
+}
 
-        // 表单提交验证逻辑
-        $('.submit2').click(function(e) {
-    // 2. 只做前端验证提示，验证失败就return，验证成功则让表单正常提交给后端
+// 表单提交验证逻辑（适配忘记密码的字段）
+$('.submit2').click(function (e) {
+    // 阻止默认提交，先做前端验证
+    e.preventDefault();
+
+    // 1. 获取表单值
     const username = $('input[name="username"]').val().trim();
     const email = $('.email').val().trim();
     const password = $('.pwd').val().trim();
     const confirmPwd = $('.confirm-pwd').val().trim();
-    const verifyCode = $('.verify-code').val().trim();
-    const showCode = $('#code_show').text().trim();
+    const verifyCode = $('.verify-code').val().trim().toUpperCase();
+    const showCode = $('#code_show').text().trim().toUpperCase();
 
-    // 前端验证（只提示，不阻止成功的提交）
+    // 2. 前端验证规则
     if (!username) {
         showFlashMessage('用户名不能为空！', 'error');
-        return false; // 阻止提交
+        return false;
     }
     if (!email) {
         showFlashMessage('邮箱不能为空！', 'error');
-        return false; // 阻止提交
-    }
-    if (password !== confirmPwd) {
-        showFlashMessage('两次输入的密码不一致！', 'error');
-        return false; // 阻止提交
+        return false;
     }
     if (!password) {
-        showFlashMessage('密码不能为空！', 'error');
-        return false; // 阻止提交
+        showFlashMessage('新密码不能为空！', 'error');
+        return false;
+    }
+    if (password !== confirmPwd) {
+        showFlashMessage('两次输入的新密码不一致！', 'error');
+        return false;
+    }
+    if (!verifyCode) {
+        showFlashMessage('请输入验证码！', 'error');
+        return false;
     }
     if (verifyCode !== showCode) {
         showFlashMessage('验证码输入错误！', 'error');
-        return false; // 阻止提交
+        return false;
     }
 
-    // 验证通过 → 不return，让表单正常提交给后端，由后端跳转
-    showFlashMessage('正在提交注册信息...', 'success');
+    // 3. 验证通过：提示并手动提交表单
+    showFlashMessage('正在重置密码...', 'success');
+    setTimeout(() => {
+        $('.form').submit(); // 提交表单到后端reset_password接口
+    }, 500);
+});
+
+// 页面加载时渲染后端的flash消息
+$(document).ready(function() {
+    const flashMessages = {{ get_flashed_messages(with_categories=true) | tojson }};
+    if (flashMessages && flashMessages.length > 0) {
+        flashMessages.forEach(([category, message]) => {
+            showFlashMessage(message, category);
+        });
+    }
 });
     </script>
 </body>

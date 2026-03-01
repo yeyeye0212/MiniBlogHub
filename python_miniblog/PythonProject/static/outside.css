@@ -6,8 +6,8 @@
    height: 600px;
    border-radius: 0.5rem;
    padding: 16px;
-   box-shadow: 10px 20px 25px -10px rgba(0, 0, 0, 0.1), 10px 4px 6px -2px rgba(0, 0, 0, 0.05);
-   background-color:rgb(226, 240, 252)
+   box-shadow: 10px 20px 25px -10px rgba(0, 0, 0, 0.244), 10px 4px 6px -2px rgba(0, 0, 0, 0.05);
+   background-color:rgb(226, 237, 252)
  }
 
  .form-title {
@@ -120,7 +120,7 @@
    text-transform: uppercase;
    cursor: pointer;
    left: 8%;
-   top: 50px;
+   top: 35px;
    position: relative;
  }
  .signup-link {

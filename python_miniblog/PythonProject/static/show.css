@@ -1,0 +1,314 @@
+.button_back {
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    padding: 10px 22px;
+    border-radius: 6px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    background-color: #43affc;
+    transition: all 0.2s ease;
+    position: absolute;
+    left: 90%;
+    top: 10px;
+}
+
+.button_back:active {
+    transform: scale(0.96);
+}
+
+.button_back:before,
+.button_back:after {
+    position: absolute;
+    content: "";
+    width: 150%;
+    left: 50%;
+    height: 100%;
+    transform: translateX(-50%);
+    z-index: -1000;
+    background-repeat: no-repeat;
+}
+
+.button_back:hover:before {
+    top: -70%;
+    background-image: radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, transparent 20%, #9fd4fa 20%, transparent 30%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, transparent 10%, #9fd4fa 15%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%);
+    background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%,
+        10% 10%, 18% 18%;
+    background-position: 50% 120%;
+    animation: greentopBubbles 0.6s ease;
+}
+
+@keyframes greentopBubbles {
+    0% {
+        background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%,
+            40% 90%, 55% 90%, 70% 90%;
+    }
+
+    50% {
+        background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%,
+            50% 50%, 65% 20%, 90% 30%;
+    }
+
+    100% {
+        background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%,
+            50% 40%, 65% 10%, 90% 20%;
+        background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+}
+
+.button_back:hover::after {
+    bottom: -70%;
+    background-image: radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, transparent 10%, #9fd4fa 15%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%),
+        radial-gradient(circle, #9fd4fa 20%, transparent 20%);
+    background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 20% 20%, 18% 18%;
+    background-position: 50% 0%;
+    animation: greenbottomBubbles 0.6s ease;
+}
+
+@keyframes greenbottomBubbles {
+    0% {
+        background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%,
+            70% -10%, 70% 0%;
+    }
+
+    50% {
+        background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%,
+            105% 0%;
+    }
+
+    100% {
+        background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%,
+            110% 10%;
+        background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+}
+
+.title_big {
+    font-size: 35px;
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+    top: 10px;
+    left: 20px;
+    position: absolute;
+    font-weight: 800;
+}
+
+.blog-content-ani {
+    position: absolute;
+    height: auto;
+    width: 1250px;
+    left: 50px;
+    top: 70px;
+    background-color: rgba(255, 255, 255, 0.92);
+    border-radius: 5px;
+    z-index: 4;
+    box-shadow: 2px 2px 4px #99999988;
+    animation: change2 1s linear 0s;
+    /* 动画改在JavaScript里面 */
+}
+
+@keyframes change2 {
+    0% {
+        height: 250px;
+        width: 1200px;
+        background-color: rgba(255, 255, 255, 0.92);
+    }
+
+    99% {
+        height: 250px;
+        width: 1250px;
+    }
+
+    100% {
+        height: auto;
+        width: 1250px;
+        background-color: rgba(255, 255, 255, 0.92);
+    }
+}
+
+
+.box-content-show {
+    font-size: 25px;
+    position: absolute;
+    top: 75px;
+    left: 20px;
+}
+
+.blog-content_post {
+    font-size: 23px;
+    position: absolute;
+    top: 130px;
+    left: 20px;
+    font-weight: 200;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.container {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    left: 80%;
+    top: 83%;
+}
+
+svg {
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    transition: all 0.3s;
+    fill: #666;
+}
+
+svg:hover {
+    transform: scale(1.1) rotate(-10deg);
+}
+
+.container input:checked~svg {
+    fill: #2196F3;
+}
+
+/*收藏 */
+
+
+.container2 input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.container2 {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    left: 85%;
+    top: 81%;
+}
+
+.container2 svg {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 50px;
+    transition: all 0.3s;
+    fill: #666;
+}
+
+.container2 svg:hover {
+    transform: scale(1.1);
+}
+
+.container2 input:checked~svg {
+    fill: #2196F3;
+}
+
+button_squ {
+    padding: 12.5px 30px;
+    border: 0;
+    border-radius: 100px;
+    background-color: #2ba8fb;
+    color: #ffffff;
+    font-weight: Bold;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    position: absolute;
+    top: 80%;
+    z-index: 5;
+    right: 15px;
+}
+
+button_squ:hover {
+    background-color: #6fc5ff;
+    box-shadow: 0 0 20px #6fc5ff50;
+    transform: scale(1.1);
+}
+
+button_squ:active {
+    background-color: #3d94cf;
+    transition: all 0.25s;
+    -webkit-transition: all 0.25s;
+    box-shadow: none;
+    transform: scale(0.98);
+}
+
+.post2 {
+    font-size: 18px;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+input:focus,
+textarea:focus,
+button:focus {
+    outline: 0;
+    border-color: #2260ff;
+    box-shadow: 0 0 0 4px #b5c9fc;
+}
+
+
+/* 评论 */
+
+.comment-form {
+    margin: 20px 0;
+    padding: 15px;
+    
+    border-radius: 5px;
+    display: none;
+    /* 默认隐藏 */
+}
+
+/* 评论输入框样式 */
+.comment-input {
+    width: 1000px;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 18px;
+    resize: none;
+    /* 禁止拖动大小 */
+    margin-bottom: 10px;
+    position:absolute;
+    bottom:10%;
+}
+
+/* 提交按钮样式 */
+.submit-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(91, 165, 250);
+    color: white;
+    cursor: pointer;
+    position:absolute;
+    top:90%;
+    left:2%;
+}
