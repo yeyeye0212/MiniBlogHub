@@ -1,7 +1,7 @@
 .blog2 {
     position: absolute;
     width: 1335px;
-    height:800px;
+    height:755px;
     top:170px;
     left: 320px;
     background-color: rgb(228, 240, 248);
@@ -140,7 +140,7 @@ label:last-child span {
 
 /* 发布按钮 */
 
-button_squ {
+.button_squ {
     padding: 12.5px 30px;
     border: 0;
     border-radius: 100px;
@@ -150,18 +150,21 @@ button_squ {
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
     position: absolute;
-    top: 10px;
+    bottom: 35px;
     z-index: 5;
    right: 50px;
+   top: auto !important;
+    left: auto !important;
+    width:120px;
 }
 
-button_squ:hover {
+.button_squ:hover {
     background-color: #6fc5ff;
     box-shadow: 0 0 20px #6fc5ff50;
     transform: scale(1.1);
 }
 
-button_squ:active {
+.button_squ:active {
     background-color: #3d94cf;
     transition: all 0.25s;
     -webkit-transition: all 0.25s;
@@ -173,6 +176,7 @@ button_squ:active {
     font-size: 20px;
     color: white;
     font-family: 'Times New Roman', Times, serif;
+    cursor:pointer;
 }
 
 
@@ -275,9 +279,4 @@ input:focus, textarea:focus, button:focus {
   animation-delay: .3s;
 }
 
-.blog-content{
-    font-size:22px;
-    position:absolute;
-    top:70px;
-    left:20px;
-}
+

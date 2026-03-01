@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>欢迎进入Elab多人博客ξ( ✿＞◡❛)</title>
-    <link rel="stylesheet" href="page.css">
-    <link rel="stylesheet" href="show.css">
+    <link rel="stylesheet" href="/static/page.css">
+    <link rel="stylesheet" href="/static/show.css">
     <style>
         @keyframes change {
             0% {
@@ -181,9 +181,9 @@
         <h6 class="forward_word">畅享所言</h6>
         <div class="top">
             <ul class="skip" type="none">
-                <li><a href="page.html" id="move_for">广场 </a><span>|</span></li>
-                <li><a href="page.html" id="move_for2">个人博客 </a><span>|</span></li>
-                <li><a href="my_information.html" id="move_for3">关于我 </a></li>
+                <li><a href="{{ url_for('page') }}" id="move_for">广场 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我 </a></li>
             </ul>
         </div>
     </div>
@@ -193,13 +193,13 @@
         <div class="silk"></div>
         <div class="open1"> </div>
         <div class="my-box">
-            <img src="image/look.jpg" class="touxiang">
+            <img src="/static/image/look.jpg" class="touxiang">
         </div>
-        <h3 class="name">昵称：zlt</h3>
+        <h3 class="name">昵称：{{username}}</h3>
         <h3 class="group">组别：极创组</h3>
         <h3 class="grade">年级：大一小登</h3>
-        <img src="./image/picture.png" width="250px" height="250px" class="biaozhi">
-        <button onclick="location.href='post.html'">
+        <img src="/static/image/picture.png" width="250px" height="250px" class="biaozhi">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p">
             <h2 class="post">发布你的帖子吧！</h2>
         </button>
     </div>
@@ -207,7 +207,7 @@
 
     <div class="blog_show">
         <button class="button_back">
-            <a href="page.html" class="skip_post">返回</a>
+            <a href="{{ url_for('page') }}" class="skip_post">返回</a>
         </button>
         <h2 class="blog-title">全文展示</h2>
         <div class="blog-content-ani">
@@ -218,7 +218,7 @@
                 请问有什么办法可以解决我的问题？
             </p>
             <div class="blog-content_post" id="textContent"></div>
-            <img src="image/look.jpg" width="130px" height="130px" class="biaozhi2">
+            <img src="/static/image/look.jpg" width="130px" height="130px" class="biaozhi2">
 
 
             <label class="container">

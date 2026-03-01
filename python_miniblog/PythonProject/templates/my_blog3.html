@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>欢迎进入Elab多人博客ξ( ✿＞◡❛)</title>
     <link rel="stylesheet" href="/static/page.css">
+    <link rel="stylesheet" href="/static/my_web.css">
     <style>
         * {
             margin: 0;
@@ -23,6 +24,7 @@
             left: 0;
             margin: 0;
             z-index: 1;
+            top:0px;
         }
 
         .forward_word {
@@ -129,7 +131,7 @@
         .blog-title{
             font-size: 30px;
             font-family: 'Times New Roman', Times, serif;
-            color:rgb(92, 183, 239);
+            color: rgb(10, 200, 252);
             top:5px;
             left:10px;
             position:absolute;
@@ -141,6 +143,69 @@
             left: 1%;
             border-radius:25px;
         }
+
+        /* 弹窗样式 */
+        .alert_box{
+            position: absolute;
+            display: flex;
+            z-index: 50;
+            height: 300px;
+            width: 500px;
+            background-color: rgba(120, 210, 240, 0.831);
+            top: 30%;
+            border-radius: 10px;
+            left: 37%;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* 设置一个黑框 */
+        .whole {
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.477);
+            z-index: 150;
+            display: flex;
+            position: fixed;
+        }
+
+        .check {
+            font-size: 35px;
+            color: rgb(0, 0, 0);
+            top: 35%;
+            left: 47%;
+            position: fixed;
+        }
+        #flash-container {
+    position: fixed; /* 固定在页面右上角，不随滚动动 */
+    left: 50%;
+    top: 60px; /* 避开导航栏 */
+    width: 300px;
+    z-index: 9999; /* 最高层级，确保显示在最上层 */
+}
+.flash-message {
+    padding: 10px 20px;
+    margin: 0 auto 10px; /* 多个提示框间距 */
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    line-height: 1.5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: none;
+}
+.flash-error {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+.flash-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
     </style>
 </head>
 
@@ -149,15 +214,15 @@
     <div class="forward">
         <h6 class="forward_word">畅享所言</h6>
         <div class="top">
-             <ul class="skip" type="none">
+            <ul class="skip" type="none">
                 <li><a href="{{ url_for('page') }}" id="move_for">广场 </a><span>|</span></li>
-                <li><a href="{{ url_for('page') }}" id="move_for2">个人博客 </a><span>|</span></li>
-                <!-- 我做了information页面要做路由-->
+                <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客 </a><span>|</span></li>
                 <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我 </a></li>
             </ul>
         </div>
     </div>
 
+    <div id="flash-container"></div>
     <!--工牌（个人信息）-->
     <div class="gongpai">
         <div class="silk"></div>
@@ -165,11 +230,11 @@
         <div class="my-box">
             <img src="/static/image/look.jpg" class="touxiang">
         </div>
-        <h3 class="name">昵称：zlt</h3>
+        <h3 class="name">昵称：{{username}}</h3>
         <h3 class="group">组别：极创组</h3>
         <h3 class="grade">年级：大一小登</h3>
         <img src="/static/image/picture.png" width="250px" height="250px" class="biaozhi">
-        <button onclick="location.href='{{ url_for('post') }}'">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p">
             <h2 class="post">发布你的帖子吧！</h2>
         </button>
     </div>
@@ -182,23 +247,22 @@
     <div>
         <label>
             <input type="radio" name="radio" >
-            <span onclick="location.href='{{ url_for('page') }}'; event.stopPropagation()">技术求助</span>
+            <span onclick="location.href='{{ url_for('my_blog1') }}'; event.stopPropagation()">技术求助</span>
+        </label>
+        <label>
+            <input type="radio" name="radio" >
+            <span onclick="location.href='{{ url_for('my_blog2') }}'; event.stopPropagation()">日常休闲</span>
         </label>
         <label>
             <input type="radio" name="radio" checked="">
-            <span onclick="location.href='{{ url_for('page2') }}'; event.stopPropagation()">日常休闲</span>
-        </label>
-        <label>
-            <input type="radio" name="radio">
-            <span onclick="location.href='{{ url_for('page3') }}'; event.stopPropagation()">组队寻人</span>
+            <span onclick="location.href='{{ url_for('my_blog3') }}'; event.stopPropagation()">组队寻人</span>
         </label>
     </div>
 </div>
     <!-- 彻底重构博客标题+帖子区域，解决绝对定位导致的间距失效问题 -->
 <div class="blog" style="
     margin-left: 20px;
-    margin-top: 10px;
-    width: calc(100% - 450px);
+    width: 1335px;
     padding: 20px;
     background: #e8f4fc;
     border-radius: 8px;
@@ -212,17 +276,19 @@
         margin: 0 0 30px 0; /* 关键：正常流的下边距，100%生效 */
         padding: 0;
         position: static; /* 取消绝对定位，回到正常文档流 */
-    ">最新帖子-日常休闲</h2>
+    ">个人博客-组队寻人</h2>
 
     {% if posts %}
         {% for post in posts %}
+            <!-- 1. 给单个帖子容器加 position: relative -->
             <div style="
                 background: white;
                 border-radius: 8px;
                 padding: 20px;
                 margin-bottom: 20px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            ">
+                position: relative; /* 新增：让按钮相对当前帖子定位 */
+            "   id="post-{{ post.id }}">
                 <h4 style="font-size: 20px; color: #0000EE; margin: 0 0 10px 0;">
                     <a href="{{ url_for('post_detail', post_id=post.id) }}" style="text-decoration: none;">{{ post.title }}</a>
                 </h4>
@@ -234,11 +300,26 @@
                     <span style="color: #0b8af2; font-weight: bold;">发布者：{{ post.author.username }}</span>
                     <span style="color: #666;">发布时间：{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
                 </div>
+
+                <!-- 删除按钮 -->
+                 <a href="location.href='{{ url_for('page') }}'" class="delete-link" data-post-id="{{ post.id }}">
+                <button aria-label="Delete item" class="delete-button">
+                    <svg class="trash-svg" viewBox="0 -10 64 74" xmlns="http://www.w3.org/2000/svg">
+                        <g id="trash-can">
+                            <rect x="16" y="24" width="32" height="30" rx="3" ry="3" fill="#e74c3c"></rect>
+                            <g transform-origin="12 18" id="lid-group">
+                                <rect x="12" y="12" width="40" height="6" rx="2" ry="2" fill="#c0392b"></rect>
+                                <rect x="26" y="8" width="12" height="4" rx="2" ry="2" fill="#c0392b"></rect>
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+                </a>
             </div>
         {% endfor %}
     {% else %}
         <div style="background: white; border-radius: 8px; padding: 20px; text-align: center; color: #999;">
-            暂无日常休闲类帖子，快去发布第一条吧！
+            暂无技术求助类帖子，快去发布第一条吧！
         </div>
     {% endif %}
 </div>
@@ -302,6 +383,110 @@
         console.log(year, month, date, day);
         document.getElementById("time").innerHTML = "今天是" + year + "年" + month + "月" + date + "日 " + day + " 祝你有个愉快的一天(๑•̀ㅂ•́)و✧";
 
+         // 给所有删除按钮绑定弹窗，每个都能用
+         let currentPostId;
+document.querySelectorAll('.delete-link').forEach(item => {
+  item.onclick = function (event) {
+    event.preventDefault();
+    currentPostId = this.getAttribute('data-post-id');
+
+    const background = document.createElement('div');
+    background.className = "whole";
+    document.body.appendChild(background);
+
+    const new_box = document.createElement('div');
+    new_box.className = "alert_box";
+    background.appendChild(new_box);
+
+    const check = document.createElement('h3');
+    check.innerHTML = "确认删除？";
+    check.className = "check";
+    new_box.appendChild(check);
+
+    const button_left = `
+    <div class="return" >
+        <button3 style="left:5%;" onclick="deletePost()">
+            <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+                <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+                </path>
+            </svg>
+            <span class="button3_word">删除</span>
+        </button3>
+    </div>`;
+
+    const button_right = `
+    <div class="return" >
+        <button3 style="left:65%;" onclick="document.querySelector('.whole').remove()">
+            <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+                <path transform="rotate(180 512 512)" d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+                </path>
+            </svg>
+            <span class="button3_word">返回页面</span>
+        </button3>
+    </div>
+`;
+
+    new_box.innerHTML += button_left + button_right;
+  }
+})
+
+        function showFlashMessage(message, category = 'success') {
+    // 先清空原有提示框
+    document.getElementById('flash-container').innerHTML = '';
+    // 创建提示框元素
+    const flashDiv = document.createElement('div');
+    flashDiv.className = `flash-message flash-${category}`;
+    flashDiv.textContent = message;
+
+    // 添加到容器
+    const container = document.getElementById('flash-container');
+    container.appendChild(flashDiv);
+
+    // 显示提示框（带动画）
+    flashDiv.style.display = 'block';
+    flashDiv.style.opacity = 0;
+    setTimeout(() => {
+        flashDiv.style.opacity = 1;
+        flashDiv.style.transition = 'opacity 0.3s ease';
+    }, 10);
+
+    // 3秒后自动隐藏提示框
+    setTimeout(() => {
+        flashDiv.style.opacity = 0;
+        setTimeout(() => flashDiv.remove(), 300);
+    }, 3000);
+}
+
+// 2. 修改删帖函数：去掉alert，用提示框
+function deletePost() {
+    fetch('/delete_post', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `post_id=${currentPostId}`,
+        credentials: 'same-origin'
+    }).then(res => res.json()).then(data => {
+        if (data.success) {
+            // 1. 删布局 + 关弹窗
+            document.getElementById(`post-${currentPostId}`).remove();
+            document.querySelector('.whole').remove();
+            // 2. 显示成功提示框（替代alert）
+            showFlashMessage('删除成功！', 'success');
+            // 3. 跳转到my_blog1（延迟一点，让提示框显示）
+            setTimeout(() => {
+                location.href = "{{ url_for('my_blog3') }}";
+            }, 1000);
+        } else {
+            // 失败也用提示框
+            showFlashMessage('删除失败：' + data.msg, 'error');
+            // 关闭弹窗
+            document.querySelector('.whole').remove();
+        }
+    }).catch(error => {
+        // 网络错误也用提示框
+        showFlashMessage('网络错误，删除失败！', 'error');
+        document.querySelector('.whole').remove();
+    });
+}
     </script>
 </body>
 

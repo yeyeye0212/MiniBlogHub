@@ -193,7 +193,7 @@
         <div class="top">
             <ul class="skip" type="none">
                 <li><a href="{{ url_for('page') }}" id="move_for">广场 </a><span>|</span></li>
-                <li><a href="{{ url_for('page') }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客 </a><span>|</span></li>
                 <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我 </a></li>
             </ul>
         </div>
@@ -225,11 +225,10 @@
         <h2 class="hello-word" style="left:35%;">发布你的帖子吧！</h2>
     </div>
 
-
     <form method="POST" action="{{ url_for('submit_post') }}">
         <!-- 发帖设计：4. 给输入框加name属性 -->
         <div class="blog2">
-            <button type="submit"> <!-- 改为form提交按钮 -->
+            <button type="submit" class="button_squ"> <!-- 改为form提交按钮 -->
                 <h2 class="post">发布</h2>
             </button>
             <h2 class="blog-title">在框中填入需要的信息</h2>
@@ -255,14 +254,9 @@
                         <span>日常休闲</span>
                     </label>
                     <label>
-                        <input type="radio" name="category" value="组队请求">
-                        <span>组队请求</span>
+                        <input type="radio" name="category" value="组队寻人">
+                        <span>组队寻人</span>
                     </label>
-                      <!-- 添加修改表单 -->
-                    <form method="POST" action="{{ url_for('update_profile') }}">
-                        <input type="text" name="signature" value="{{ signature }}">
-                        <button type="submit">保存修改</button>
-                    </form>
                 </div>
             </div>
         </div>

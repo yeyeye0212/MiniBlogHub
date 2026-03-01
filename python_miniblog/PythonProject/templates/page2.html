@@ -23,6 +23,7 @@
             left: 0;
             margin: 0;
             z-index: 1;
+            top:0px;
         }
 
         .forward_word {
@@ -129,7 +130,7 @@
         .blog-title{
             font-size: 30px;
             font-family: 'Times New Roman', Times, serif;
-            color: rgb(10, 200, 252);
+            color:rgb(92, 183, 239);
             top:5px;
             left:10px;
             position:absolute;
@@ -149,10 +150,11 @@
     <div class="forward">
         <h6 class="forward_word">畅享所言</h6>
         <div class="top">
-            <ul class="skip" type="none">
-                <li><a href="page.html" id="move_for">广场 </a><span>|</span></li>
-                <li><a href="page.html" id="move_for2">个人博客 </a><span>|</span></li>
-                <li><a href="page.html" id="move_for3">关于我 </a></li>
+             <ul class="skip" type="none">
+                <li><a href="{{ url_for('page') }}" id="move_for">广场 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <!-- 我做了information页面要做路由-->
+                <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我 </a></li>
             </ul>
         </div>
     </div>
@@ -164,11 +166,11 @@
         <div class="my-box">
             <img src="/static/image/look.jpg" class="touxiang">
         </div>
-        <h3 class="name">昵称：zlt</h3>
+        <h3 class="name">昵称：{{username}}</h3>
         <h3 class="group">组别：极创组</h3>
         <h3 class="grade">年级：大一小登</h3>
         <img src="/static/image/picture.png" width="250px" height="250px" class="biaozhi">
-        <button onclick="location.href='{{ url_for('post') }}'">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p">
             <h2 class="post">发布你的帖子吧！</h2>
         </button>
     </div>
@@ -184,11 +186,11 @@
             <span onclick="location.href='{{ url_for('page') }}'; event.stopPropagation()">技术求助</span>
         </label>
         <label>
-            <input type="radio" name="radio" >
+            <input type="radio" name="radio" checked="">
             <span onclick="location.href='{{ url_for('page2') }}'; event.stopPropagation()">日常休闲</span>
         </label>
         <label>
-            <input type="radio" name="radio" checked="">
+            <input type="radio" name="radio">
             <span onclick="location.href='{{ url_for('page3') }}'; event.stopPropagation()">组队寻人</span>
         </label>
     </div>
@@ -196,8 +198,7 @@
     <!-- 彻底重构博客标题+帖子区域，解决绝对定位导致的间距失效问题 -->
 <div class="blog" style="
     margin-left: 20px;
-    margin-top: 10px;
-    width: calc(100% - 450px);
+    width: 1335px;
     padding: 20px;
     background: #e8f4fc;
     border-radius: 8px;
@@ -211,7 +212,7 @@
         margin: 0 0 30px 0; /* 关键：正常流的下边距，100%生效 */
         padding: 0;
         position: static; /* 取消绝对定位，回到正常文档流 */
-    ">最新帖子-组队寻人</h2>
+    ">最新帖子-日常休闲</h2>
 
     {% if posts %}
         {% for post in posts %}
@@ -237,7 +238,7 @@
         {% endfor %}
     {% else %}
         <div style="background: white; border-radius: 8px; padding: 20px; text-align: center; color: #999;">
-            暂无组队寻人类帖子，快去发布第一条吧！
+            暂无日常休闲类帖子，快去发布第一条吧！
         </div>
     {% endif %}
 </div>

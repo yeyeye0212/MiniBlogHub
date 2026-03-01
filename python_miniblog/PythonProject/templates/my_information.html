@@ -13,7 +13,7 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box;++
             z-index: 0;
         }
 
@@ -236,7 +236,7 @@
         <div class="top">
             <ul class="skip" type="none">
                 <li><a href="{{ url_for('page', username=username) }}" id="move_for">广场 </a><span>|</span></li>
-                <li><a href="{{ url_for('page', username=username) }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_blog1', username=username) }}" id="move_for2">个人博客 </a><span>|</span></li>
                 <li><a href="{{ url_for('my_information', username=username) }}" id="move_for3">关于我 </a></li>
             </ul>
         </div>
@@ -287,7 +287,7 @@
         </button>
         <!-- 按钮2：退出登录（ -->
         <button class="cta" style="left:80%;bottom:10%">
-            <span class="hover-underline-animation"><a href="{{ url_for('log_in') }}" id="return">退出登录</a></span>
+            <span class="hover-underline-animation"><a href="{{ url_for('logout') }}" id="return">退出登录</a></span>
             <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
                 viewBox="0 0 46 16">
                 <path id="Path_10" data-name="Path 10"
@@ -318,18 +318,18 @@
 
             // 把按钮往里加一下
             const button_left = `
-    <div class="return" >
-        <button3 style="left:5%;" onclick="window.location.href='{{ url_for('log_in') }}'">
-            <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+<div class="return" >
+    <button3 style="left:5%;" onclick="window.location.href='{{ url_for('logout') }}'">
+        <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
                 <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
                 </path>
             </svg>
-            <span class="button3_word">退出登录</span>
-        </button3>
-    </div>`;
+        <span class="button3_word">退出登录</span>
+    </button3>
+</div>`;
             const button_right = `
     <div class="return" >
-        <button3 style="left:65%;" onclick="window.location.href='{{ url_for('my_information', username=username) }}'">
+        <button3 style="left:65%;" onclick="document.querySelector('.whole').remove()">
             <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
                 <path transform="rotate(180 512 512)" d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
                 </path>
