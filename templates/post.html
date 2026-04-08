@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>发布帖子 - Elab多人博客</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhance.css') }}">
+    <style>
+        /* 统一布局 + 抽屉侧边栏（与广场页一致） */
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background: #f5f7fa; }
+        .content-wrapper { position: relative; display: flex; flex-wrap: nowrap; max-width: 1400px; margin: 20px auto 0; padding: 0 20px; gap: 24px; }
+        .gongpai { flex: 0 0 280px; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); padding: 20px 16px 30px; transition: all 0.3s ease; height: fit-content; position: relative; z-index: 10; }
+        .main-content { flex: 1; min-width: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 0 12px; gap: 0; }
+            .gongpai { position: absolute; top: 0; left: 0; width: 280px; height: auto; max-height: 90vh; overflow-y: auto; margin: 0; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); z-index: 1050; background: white; display: block; }
+            .gongpai.drawer-open { transform: translateX(0); }
+            .main-content { margin-left: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+            .main-content.push-right { margin-left: 280px; }
+            .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px); z-index: 1040; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+            .drawer-overlay.active { opacity: 1; visibility: visible; }
+            .forward { position: relative; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+            .menu-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 30px; cursor: pointer; font-size: 28px; color: white; margin-right: 12px; }
+            .top { flex: 1; }
+            .skip { justify-content: flex-end; }
+        }
+        @media (min-width: 769px) { .menu-toggle, .drawer-overlay { display: none; } }
+        /* 发布表单专用样式 */
+        .post-form-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 32px;
+            padding: 30px;
+            margin: 20px 0 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .welcome-section {
+            background: linear-gradient(135deg, #e6f3e6 0%, #d4e6d4 100%);
+            border-radius: 28px;
+            padding: 20px 28px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .hello-word { font-size: 1.6rem; margin: 0 0 8px; color: #2c5a2e; }
+        .hello-word1 { font-size: 1rem; color: #4a6741; margin: 0; }
+        .form-group { margin-bottom: 28px; display: flex; flex-direction: column; }
+        .form-group label { font-size: 1.2rem; font-weight: 600; color: #2e4a1f; margin-bottom: 8px; }
+        .form-group input, .form-group textarea { background: #fff; border: 1px solid #c5e1a5; border-radius: 28px; padding: 12px 20px; font-size: 1rem; transition: all 0.2s ease; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #7cb342; box-shadow: 0 0 0 3px rgba(124, 179, 66, 0.2); }
+        .form-group textarea { resize: vertical; min-height: 200px; }
+        .radio-group { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px; }
+        .radio-group label { display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; background: #f1f8e9; padding: 8px 20px; border-radius: 40px; transition: all 0.2s; }
+        .radio-group input[type="radio"] { width: auto; margin: 0; }
+        .radio-group label:has(input:checked) { background: #7cb342; color: white; }
+        .submit-btn { background: linear-gradient(90deg, #7cb342, #558b2f); border: none; border-radius: 48px; padding: 14px 32px; font-size: 1.2rem; font-weight: 700; color: white; cursor: pointer; transition: all 0.25s ease; width: 100%; max-width: 200px; margin-top: 10px; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -8px #558b2f; }
+        .button_p { margin-top: 24px; width: 100%; background: #5c9e6b; border: none; border-radius: 40px; padding: 10px 0; cursor: pointer; transition: 0.2s; }
+        .button_p:hover { background: #468a56; transform: scale(0.98); }
+        .post { font-size: 1.2rem; margin: 0; color: white; text-align: center; }
+        .touxiang { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #cfe3cf; }
+        .my-box { text-align: center; margin-bottom: 16px; }
+        .name, .group, .grade { margin: 12px 0; font-size: 1rem; text-align: center; }
+        .forward { background: #4c7a4a; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .forward_word { font-size: 1.8rem; margin: 0; color: white; letter-spacing: 2px; }
+        .skip { display: flex; list-style: none; gap: 12px; margin: 0; padding: 0; }
+        .skip li a { color: white; text-decoration: none; font-weight: 500; }
+        .skip li span { color: rgba(255,255,255,0.6); margin-left: 8px; }
+        .biaozhi { display: block; margin: 20px auto 0; width: 80px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<div class="forward">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="menu-toggle" id="menuToggle">☰</div>
+        <h6 class="forward_word">畅享所言</h6>
+    </div>
+    <div class="top">
+        <ul class="skip">
+            <li><a href="{{ url_for('page') }}" id="move_for">广场</a><span>|</span></li>
+            <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客</a><span>|</span></li>
+            <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <!-- 左侧工牌 -->
+    <div class="gongpai" id="drawerSidebar">
+        <div class="my-box">
+            <img src="{{ avatar }}" class="touxiang" alt="头像">
+        </div>
+        <h3 class="name">昵称：{{ username }}</h3>
+        <h3 class="group">组别：{{ group }}</h3>
+        <h3 class="grade">个性签名：{{ signature }}</h3>
+        <img src="/static/image/picture.png" class="biaozhi" alt="装饰图">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p">
+            <h2 class="post">发布你的帖子吧！</h2>
+        </button>
+        <div style="text-align: center; margin-top: 20px; display: none;" id="closeDrawerBtnMobile">
+            <span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer;">关闭菜单</span>
+        </div>
+    </div>
+
+    <!-- 右侧主要内容 -->
+    <div class="main-content" id="mainContent">
+        <div class="welcome-section">
+            <h2 class="hello-word">发布你的帖子吧！</h2>
+            <p class="hello-word1">分享你的想法，让更多人看见</p>
+        </div>
+
+        <div class="post-form-container">
+            <form method="POST" action="{{ url_for('submit_post') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="title">标题 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="title" name="title" placeholder="标题不超过20个字" maxlength="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="intro">简介 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="intro" name="intro" placeholder="用一句话简单介绍你的帖子" maxlength="40" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">正文 <span style="color: #e74c3c;">*</span></label>
+                    <textarea id="content" name="content" placeholder="输入正文完整内容（支持换行和长文本）" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>分区 <span style="color: #e74c3c;">*</span></label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="category" value="技术求助" checked> 技术求助</label>
+                        <label><input type="radio" name="category" value="日常休闲"> 日常休闲</label>
+                        <label><input type="radio" name="category" value="组队寻人"> 组队寻人</label>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <button type="submit" class="submit-btn">✨ 发布帖子</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<script>
+    // 导航栏 hover 效果
+    const navLinks = document.querySelectorAll('#move_for, #move_for2, #move_for3');
+    navLinks.forEach(link => {
+        link.addEventListener('mouseover', () => link.style.color = 'rgb(146, 222, 245)');
+        link.addEventListener('mouseout', () => link.style.color = 'white');
+    });
+
+    // 抽屉逻辑
+    const isMobile = () => window.innerWidth <= 768;
+    const drawer = document.getElementById('drawerSidebar');
+    const mainContent = document.getElementById('mainContent');
+    const overlay = document.getElementById('drawerOverlay');
+    const menuBtn = document.getElementById('menuToggle');
+    let closeBtn = null;
+
+    function openDrawer() { if (!isMobile()) return; drawer.classList.add('drawer-open'); mainContent.classList.add('push-right'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; if (closeBtn) closeBtn.style.display = 'block'; }
+    function closeDrawer() { if (!isMobile()) return; drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+    function toggleDrawer() { drawer.classList.contains('drawer-open') ? closeDrawer() : openDrawer(); }
+    if (menuBtn) menuBtn.addEventListener('click', toggleDrawer);
+    if (overlay) overlay.addEventListener('click', closeDrawer);
+
+    function addCloseButtonInMobile() {
+        if (!isMobile()) return;
+        if (!closeBtn) {
+            const container = drawer.querySelector('.my-box')?.parentNode;
+            if (container && !document.getElementById('customCloseBtn')) {
+                const btnDiv = document.createElement('div');
+                btnDiv.style.textAlign = 'center'; btnDiv.style.marginTop = '20px';
+                btnDiv.innerHTML = '<span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer; display:inline-block;">✕ 关闭菜单</span>';
+                btnDiv.id = 'customCloseBtn'; btnDiv.addEventListener('click', closeDrawer);
+                container.appendChild(btnDiv); closeBtn = btnDiv;
+            }
+        }
+    }
+    window.addEventListener('resize', function() {
+        if (!isMobile()) { drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+        else { addCloseButtonInMobile(); if (drawer.classList.contains('drawer-open') && !mainContent.classList.contains('push-right')) mainContent.classList.add('push-right'); }
+    });
+    if (isMobile()) addCloseButtonInMobile();
+</script>
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日常休闲 · Elab多人博客</title>
+    <link rel="stylesheet" href="/static/page.css">
+    <link rel="stylesheet" href="/static/my_web.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhance.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 整体背景 + 微网格装饰 */
+        body {
+            background: linear-gradient(135deg, #e6f4ea 0%, #d4eaf7 100%);
+            background-attachment: fixed;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,240,0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,240,0.2) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .forward {
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            left: 0;
+            margin: 0;
+            z-index: 1;
+            top: 0px;
+            backdrop-filter: blur(8px);
+        }
+
+        .forward_word {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            z-index: 2;
+        }
+
+        .top {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            z-index: 3;
+        }
+
+        .skip {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .skip li {
+            color: white;
+        }
+
+        .skip li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .gongpai {
+            height: 100%;
+            width: 320px;
+            position: fixed;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-radius: 0px 0px 10px 10px;
+            top: 50px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+            border-right: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .touxiang {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            object-fit: cover;
+            object-position: center;
+            top: 100px;
+            left: 70px;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .biaozhi {
+            position: absolute;
+            top: 480px;
+            left: 10%;
+            opacity: 0.8;
+        }
+
+        .button_p {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            background: #5c9e6b;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 2;
+        }
+        .button_p:hover {
+            background: #468a56;
+            transform: translateX(-50%) scale(0.98);
+        }
+        .post {
+            font-size: 1.2rem;
+            margin: 0;
+            color: white;
+            text-align: center;
+        }
+
+        .name, .group, .grade {
+            position: relative;
+            top: 280px;
+            text-align: center;
+            margin: 12px 0;
+            font-size: 1rem;
+            background: rgba(255,255,240,0.6);
+            padding: 4px;
+            border-radius: 20px;
+            width: 90%;
+            left: 5%;
+        }
+
+        .content {
+            margin-left: 340px;
+            margin-top: 70px;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .hello-word {
+            font-size: 2rem;
+            color: #2c5a2e;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+        .hello-word1 {
+            font-size: 1rem;
+            color: #3a6b3c;
+            margin-top: 8px;
+        }
+
+        .mydict {
+            margin-left: 340px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        .mydict label span {
+            background: rgba(255,255,245,0.85);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .mydict input:checked + span {
+            background: #5c9e6b;
+            color: white;
+        }
+
+        /* 帖子列表区 - 半透玻璃质感 */
+        .blog {
+            margin-left: 340px;
+            width: calc(100% - 380px);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 2;
+        }
+        .blog h2 {
+            font-size: 30px;
+            font-family: 'Times New Roman', Times, serif;
+            color: #1b5e2a;
+            margin: 0 0 30px 0;
+            border-left: 5px solid #5c9e6b;
+            padding-left: 16px;
+        }
+        .post-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: 0.2s;
+            position: relative;
+        }
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+        .post-title a {
+            font-size: 1.4rem;
+            color: #1e466e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .post-excerpt {
+            color: #2d3e2b;
+            margin: 10px 0;
+        }
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #5a6e5a;
+        }
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .delete-button {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .trash-svg {
+            width: 28px;
+            height: 28px;
+            transition: 0.2s;
+        }
+        .delete-button:hover .trash-svg {
+            transform: scale(1.05);
+        }
+
+        /* 弹窗样式 */
+        .alert_box {
+            position: absolute;
+            display: flex;
+            z-index: 50;
+            height: 300px;
+            width: 500px;
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(16px);
+            top: 30%;
+            border-radius: 28px;
+            left: 37%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .whole {
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+            display: flex;
+            position: fixed;
+            backdrop-filter: blur(4px);
+        }
+        .check {
+            font-size: 28px;
+            color: #2c3e2f;
+            top: 35%;
+            left: 47%;
+            position: fixed;
+        }
+
+        #flash-container {
+            position: fixed;
+            left: 50%;
+            top: 70px;
+            width: 300px;
+            z-index: 9999;
+            transform: translateX(-50%);
+        }
+        .flash-message {
+            padding: 12px 24px;
+            margin: 0 auto 10px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            backdrop-filter: blur(8px);
+        }
+        .flash-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        .flash-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* 响应式：移动端适配 */
+        @media (max-width: 768px) {
+            .gongpai {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 1050;
+            }
+            .gongpai.open {
+                transform: translateX(0);
+            }
+            .content, .mydict, .blog {
+                margin-left: 20px;
+                width: calc(100% - 40px);
+            }
+            .forward {
+                padding: 0 12px;
+            }
+            .menu-toggle {
+                display: inline-block;
+                font-size: 28px;
+                color: white;
+                cursor: pointer;
+                margin-right: 12px;
+            }
+            .drawer-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 1040;
+                display: none;
+            }
+            .drawer-overlay.active {
+                display: block;
+            }
+        }
+        @media (min-width: 769px) {
+            .menu-toggle, .drawer-overlay {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="forward">
+        <div style="display: flex; align-items: center;">
+            <div class="menu-toggle" id="menuToggle">☰</div>
+            <h6 class="forward_word">畅享所言</h6>
+        </div>
+        <div class="top">
+            <ul class="skip" type="none">
+                <li><a href="{{ url_for('page') }}" id="move_for">广场 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我 </a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="flash-container"></div>
+
+    <!-- 左侧工牌 -->
+    <div class="gongpai" id="sidebar">
+        <div class="my-box">
+            <img src="{{ avatar }}" class="touxiang" id="normalAvatar">
+        </div>
+        <h3 class="name">昵称：{{ username }}</h3>
+        <h3 class="group">组别：{{ group }}</h3>
+        <h3 class="grade">个性签名：{{ signature }}</h3>
+        <img src="/static/image/picture.png" width="250px" height="250px" class="biaozhi">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p">
+            <h2 class="post">发布你的帖子吧！</h2>
+        </button>
+    </div>
+
+    <!-- 右侧内容 -->
+    <div class="content">
+        <h2 class="hello-word">欢迎来到Elab多人博客</h2>
+        <h2 class="hello-word1" id="time">今天是xx年xx月xx日 星期x，祝你有个愉快的一天</h2>
+    </div>
+
+    <div class="mydict">
+        <div>
+            <label>
+                <input type="radio" name="radio">
+                <span onclick="location.href='{{ url_for('my_blog1') }}'">技术求助</span>
+            </label>
+            <label>
+               <input type="radio" name="radio" checked>
+               <span onclick="location.href='{{ url_for('my_blog2') }}'">日常休闲</span>
+            </label>
+            <label>
+               <input type="radio" name="radio">
+                <span onclick="location.href='{{ url_for('my_blog3') }}'">组队寻人</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="blog">
+        <h2>🌸 日常休闲 · 最新帖子</h2>
+        {% if posts %}
+            {% for post in posts %}
+            <div class="post-card" id="post-{{ post.id }}">
+                <h4 class="post-title">
+                    <a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a>
+                </h4>
+                <p class="post-excerpt">
+                    {% if post.intro %}{{ post.intro }}{% else %}{{ post.content[:100] }}...{% endif %}
+                </p>
+                <div class="post-meta">
+                    <img src="{{ post.author_avatar }}" class="avatar-sm" alt="avatar">
+                    <span>发布者：{{ post.author.username }}</span>
+                    <span>发布时间：{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+                <a href="javascript:void(0)" class="delete-link" data-post-id="{{ post.id }}">
+                    <button class="delete-button" aria-label="删除">
+                        <svg class="trash-svg" viewBox="0 -10 64 74" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="16" y="24" width="32" height="30" rx="3" ry="3" fill="#e74c3c"></rect>
+                            <g transform-origin="12 18">
+                                <rect x="12" y="12" width="40" height="6" rx="2" ry="2" fill="#c0392b"></rect>
+                                <rect x="26" y="8" width="12" height="4" rx="2" ry="2" fill="#c0392b"></rect>
+                            </g>
+                        </svg>
+                    </button>
+                </a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 40px; color: #6c7a6c;">暂无日常休闲类帖子，快去发布第一条吧！</div>
+        {% endif %}
+    </div>
+
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <script>
+        // 导航栏悬停
+        var move = document.getElementById("move_for");
+        move.onmouseover = () => move.style.color = "rgb(146, 222, 245)";
+        move.onmouseout = () => move.style.color = "white";
+        let move2 = document.getElementById("move_for2");
+        move2.onmouseover = () => move2.style.color = "rgb(146, 222, 245)";
+        move2.onmouseout = () => move2.style.color = "white";
+        let move3 = document.getElementById("move_for3");
+        move3.onmouseover = () => move3.style.color = "rgb(146, 222, 245)";
+        move3.onmouseout = () => move3.style.color = "white";
+
+        // 日期显示
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const date = now.getDate();
+        const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        const day = days[now.getDay()];
+        document.getElementById("time").innerHTML = `今天是${year}年${month}月${date}日 ${day} 祝你有个愉快的一天(๑•̀ㅂ•́)و✧`;
+
+        // 抽屉式侧边栏（移动端）
+        const isMobile = () => window.innerWidth <= 768;
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('drawerOverlay');
+        const menuToggle = document.getElementById('menuToggle');
+        function openDrawer() { if (isMobile()) { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; } }
+        function closeDrawer() { if (isMobile()) { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; } }
+        if (menuToggle) menuToggle.addEventListener('click', openDrawer);
+        if (overlay) overlay.addEventListener('click', closeDrawer);
+        window.addEventListener('resize', () => { if (!isMobile()) closeDrawer(); });
+
+        // 删除帖子相关
+        let currentPostId;
+        function showFlashMessage(msg, type = 'success') {
+            const container = document.getElementById('flash-container');
+            container.innerHTML = '';
+            const div = document.createElement('div');
+            div.className = `flash-message flash-${type}`;
+            div.textContent = msg;
+            container.appendChild(div);
+            div.style.display = 'block';
+            div.style.opacity = 0;
+            setTimeout(() => { div.style.opacity = 1; }, 10);
+            setTimeout(() => {
+                div.style.opacity = 0;
+                setTimeout(() => div.remove(), 300);
+            }, 3000);
+        }
+        function deletePost() {
+            fetch('/delete_post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: `post_id=${currentPostId}`,
+                credentials: 'same-origin'
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    document.getElementById(`post-${currentPostId}`).remove();
+                    document.querySelector('.whole')?.remove();
+                    showFlashMessage('删除成功！', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showFlashMessage('删除失败：' + data.msg, 'error');
+                    document.querySelector('.whole')?.remove();
+                }
+            }).catch(() => {
+                showFlashMessage('网络错误，删除失败！', 'error');
+                document.querySelector('.whole')?.remove();
+            });
+        }
+        document.querySelectorAll('.delete-link').forEach(link => {
+            link.onclick = function(e) {
+                e.preventDefault();
+                currentPostId = this.getAttribute('data-post-id');
+                const bg = document.createElement('div'); bg.className = 'whole';
+                const box = document.createElement('div'); box.className = 'alert_box';
+                const check = document.createElement('h3'); check.className = 'check'; check.innerText = '确认删除这篇帖子？';
+                box.appendChild(check);
+                const btnDiv = document.createElement('div'); btnDiv.style.display = 'flex'; btnDiv.style.justifyContent = 'center'; btnDiv.style.gap = '40px'; btnDiv.style.marginTop = '180px';
+                btnDiv.innerHTML = `
+                    <button onclick="deletePost()" style="background:#e74c3c; color:white; border:none; padding:10px 28px; border-radius:40px; cursor:pointer;">删除</button>
+                    <button onclick="document.querySelector('.whole').remove()" style="background:#95a5a6; color:white; border:none; padding:10px 28px; border-radius:40px; cursor:pointer;">取消</button>
+                `;
+                box.appendChild(btnDiv);
+                bg.appendChild(box);
+                document.body.appendChild(bg);
+            };
+        });
+        window.deletePost = deletePost;
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>组队寻人 - Elab多人博客</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhance.css') }}">
+    <style>
+        /* 完全相同的布局修复样式，确保三个页面行为一致 */
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background: #f5f7fa; }
+        .content-wrapper { position: relative; display: flex; flex-wrap: nowrap; max-width: 1400px; margin: 20px auto 0; padding: 0 20px; gap: 24px; }
+        .gongpai { flex: 0 0 280px; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); padding: 20px 16px 30px; transition: all 0.3s ease; height: fit-content; position: relative; z-index: 10; }
+        .main-content { flex: 1; min-width: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 0 12px; gap: 0; }
+            .gongpai { position: absolute; top: 0; left: 0; width: 280px; height: auto; max-height: 90vh; overflow-y: auto; margin: 0; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); z-index: 1050; background: white; display: block; }
+            .gongpai.drawer-open { transform: translateX(0); }
+            .main-content { margin-left: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+            .main-content.push-right { margin-left: 280px; }
+            .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px); z-index: 1040; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+            .drawer-overlay.active { opacity: 1; visibility: visible; }
+            .forward { position: relative; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+            .menu-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 30px; cursor: pointer; font-size: 28px; color: white; margin-right: 12px; }
+            .menu-toggle:hover { background: rgba(255,255,255,0.3); }
+            .top { flex: 1; }
+            .skip { justify-content: flex-end; }
+        }
+        @media (min-width: 769px) { .menu-toggle, .drawer-overlay { display: none; } }
+        /* 原有卡片样式保持一致 */
+        .post-card { background: white; border-radius: 20px; padding: 18px 22px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #eef2f6; transition: 0.2s; }
+        .post-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .section-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 24px; color: #2c3e2f; border-left: 5px solid #6c9e6f; padding-left: 16px; }
+        .welcome-section { background: linear-gradient(135deg, #e6f3e6 0%, #d4e6d4 100%); border-radius: 28px; padding: 20px 28px; margin-bottom: 32px; }
+        .hello-word { font-size: 1.6rem; margin: 0 0 8px; color: #2c5a2e; }
+        .hello-word1 { font-size: 1rem; color: #4a6741; margin: 0; }
+        .mydict { margin-bottom: 28px; }
+        .mydict label span { background: #f0f2f5; padding: 8px 18px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .mydict input:checked + span { background: #5c9e6b; color: white; }
+        .avatar-sm { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px; }
+        .post-meta { display: flex; align-items: center; gap: 16px; margin-top: 12px; font-size: 0.85rem; color: #6c757d; }
+        .button_p { margin-top: 24px; width: 100%; background: #5c9e6b; border: none; border-radius: 40px; padding: 10px 0; cursor: pointer; transition: 0.2s; }
+        .button_p:hover { background: #468a56; transform: scale(0.98); }
+        .post { font-size: 1.2rem; margin: 0; color: white; }
+        .empty-state { background: white; border-radius: 24px; padding: 48px 20px; text-align: center; color: #8f9b8a; }
+        .forward { background: #4c7a4a; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .forward_word { font-size: 1.8rem; margin: 0; color: white; letter-spacing: 2px; }
+        .skip { display: flex; list-style: none; gap: 12px; margin: 0; padding: 0; }
+        .skip li a { color: white; text-decoration: none; font-weight: 500; }
+        .skip li span { color: rgba(255,255,255,0.6); margin-left: 8px; }
+        .touxiang { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #cfe3cf; }
+        .my-box { text-align: center; margin-bottom: 16px; }
+        .name, .group, .grade { margin: 12px 0; font-size: 1rem; text-align: center; }
+        .biaozhi { display: block; margin: 20px auto 0; width: 80px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<div class="forward">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="menu-toggle" id="menuToggle">☰</div>
+        <h6 class="forward_word">畅享所言</h6>
+    </div>
+    <div class="top">
+        <ul class="skip">
+            <li><a href="{{ url_for('page') }}" id="move_for">广场</a><span>|</span></li>
+            <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客</a><span>|</span></li>
+            <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <div class="gongpai" id="drawerSidebar">
+        <div class="my-box"><img src="{{ avatar }}" class="touxiang" alt="头像"></div>
+        <h3 class="name">昵称：{{ username }}</h3>
+        <h3 class="group">组别：{{ group }}</h3>
+        <h3 class="grade">个性签名：{{ signature }}</h3>
+        <img src="/static/image/picture.png" class="biaozhi" alt="装饰图">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p"><h2 class="post">发布你的帖子吧！</h2></button>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="welcome-section">
+            <h2 class="hello-word">欢迎来到Elab多人博客</h2>
+            <h2 class="hello-word1" id="time">今天是xx年xx月xx日 星期x，祝你有个愉快的一天</h2>
+        </div>
+        <div class="mydict">
+            <div>
+                <label><input type="radio" name="radio"><span onclick="location.href='{{ url_for('page') }}'">技术求助</span></label>
+                <label><input type="radio" name="radio"><span onclick="location.href='{{ url_for('page2') }}'">日常休闲</span></label>
+                <label><input type="radio" name="radio" checked><span onclick="location.href='{{ url_for('page3') }}'">组队寻人</span></label>
+            </div>
+        </div>
+        <div class="blog">
+            <h2 class="section-title">最新帖子 - 组队寻人</h2>
+            {% if posts %}
+                {% for post in posts %}
+                <div class="post-card">
+                    <h4 class="post-title"><a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a></h4>
+                    <p class="post-excerpt">{% if post.intro %}{{ post.intro }}{% else %}{{ post.content[:100] }}...{% endif %}</p>
+                    <div class="post-meta">
+                        <img src="{{ post.author_avatar }}" class="avatar-sm" alt="avatar">
+                        <span class="author-name">发布者：{{ post.author.username }}</span>
+                        <span class="post-time">发布时间：{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">暂无组队寻人类帖子，快去发布第一条吧！</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<script>
+    const navLinks = document.querySelectorAll('#move_for, #move_for2, #move_for3');
+    navLinks.forEach(link => {
+        link.addEventListener('mouseover', () => link.style.color = 'rgb(146, 222, 245)');
+        link.addEventListener('mouseout', () => link.style.color = 'white');
+    });
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const day = dayNames[now.getDay()];
+    document.getElementById('time').innerHTML = `今天是${year}年${month}月${date}日 ${day} 祝你有个愉快的一天(๑•̀ㅂ•́)و✧`;
+
+    const isMobile = () => window.innerWidth <= 768;
+    const drawer = document.getElementById('drawerSidebar');
+    const mainContent = document.getElementById('mainContent');
+    const overlay = document.getElementById('drawerOverlay');
+    const menuBtn = document.getElementById('menuToggle');
+    let closeBtn = null;
+    function openDrawer() { if (!isMobile()) return; drawer.classList.add('drawer-open'); mainContent.classList.add('push-right'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; if (closeBtn) closeBtn.style.display = 'block'; }
+    function closeDrawer() { if (!isMobile()) return; drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+    function toggleDrawer() { drawer.classList.contains('drawer-open') ? closeDrawer() : openDrawer(); }
+    if (menuBtn) menuBtn.addEventListener('click', toggleDrawer);
+    if (overlay) overlay.addEventListener('click', closeDrawer);
+    function addCloseButtonInMobile() {
+        if (!isMobile()) return;
+        if (!closeBtn) {
+            const container = drawer.querySelector('.my-box')?.parentNode;
+            if (container && !document.getElementById('customCloseBtn')) {
+                const btnDiv = document.createElement('div');
+                btnDiv.style.textAlign = 'center'; btnDiv.style.marginTop = '20px';
+                btnDiv.innerHTML = '<span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer; display:inline-block;">✕ 关闭菜单</span>';
+                btnDiv.id = 'customCloseBtn'; btnDiv.addEventListener('click', closeDrawer);
+                container.appendChild(btnDiv); closeBtn = btnDiv;
+            }
+        }
+    }
+    window.addEventListener('resize', function() {
+        if (!isMobile()) { drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+        else { addCloseButtonInMobile(); if (drawer.classList.contains('drawer-open') && !mainContent.classList.contains('push-right')) mainContent.classList.add('push-right'); }
+    });
+    if (isMobile()) addCloseButtonInMobile();
+</script>
+</body>
+</html>

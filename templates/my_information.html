@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>关于我 - Elab多人博客</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhance.css') }}">
+    <style>
+        /* 统一布局 + 抽屉侧边栏，但关于我页面使用左侧工牌展示个人信息，右侧展示编辑内容 */
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background: #f5f7fa; }
+        .content-wrapper { position: relative; display: flex; flex-wrap: nowrap; max-width: 1400px; margin: 20px auto 0; padding: 0 20px; gap: 24px; }
+        .gongpai { flex: 0 0 280px; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); padding: 20px 16px 30px; transition: all 0.3s ease; height: fit-content; position: relative; z-index: 10; }
+        .main-content { flex: 1; min-width: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); background: white; border-radius: 28px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 0 12px; gap: 0; }
+            .gongpai { position: absolute; top: 0; left: 0; width: 280px; height: auto; max-height: 90vh; overflow-y: auto; margin: 0; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); z-index: 1050; background: white; display: block; }
+            .gongpai.drawer-open { transform: translateX(0); }
+            .main-content { margin-left: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+            .main-content.push-right { margin-left: 280px; }
+            .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px); z-index: 1040; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+            .drawer-overlay.active { opacity: 1; visibility: visible; }
+            .forward { position: relative; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+            .menu-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 30px; cursor: pointer; font-size: 28px; color: white; margin-right: 12px; }
+            .top { flex: 1; }
+            .skip { justify-content: flex-end; }
+        }
+        @media (min-width: 769px) { .menu-toggle, .drawer-overlay { display: none; } }
+        /* 关于我页面特有样式 */
+        .info-row { margin-bottom: 24px; display: flex; align-items: baseline; flex-wrap: wrap; }
+        .info-label { font-weight: 600; width: 100px; color: #2c5a2e; font-size: 1.1rem; }
+        .info-value { flex: 1; font-size: 1.1rem; color: #2d3e2b; }
+        .info-value input, .info-value textarea { width: 100%; max-width: 400px; padding: 8px 16px; border-radius: 28px; border: 1px solid #c5e1a5; font-size: 1rem; }
+        .avatar-section { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
+        .avatar-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #cfe3cf; }
+        .avatar-upload-btn { background: #e9ecef; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; }
+        .action-buttons { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+        .btn-primary { background: #5c9e6b; color: white; border: none; padding: 10px 28px; border-radius: 40px; cursor: pointer; font-size: 1rem; }
+        .btn-secondary { background: #e9ecef; color: #2c3e2f; border: none; padding: 10px 28px; border-radius: 40px; cursor: pointer; }
+        .btn-danger { background: #e74c3c; color: white; border: none; padding: 10px 28px; border-radius: 40px; cursor: pointer; }
+        .button_p { margin-top: 24px; width: 100%; background: #5c9e6b; border: none; border-radius: 40px; padding: 10px 0; cursor: pointer; }
+        .post { font-size: 1.2rem; margin: 0; color: white; text-align: center; }
+        .touxiang { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #cfe3cf; }
+        .my-box { text-align: center; margin-bottom: 16px; }
+        .name, .group, .grade { margin: 12px 0; font-size: 1rem; text-align: center; }
+        .forward { background: #4c7a4a; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .forward_word { font-size: 1.8rem; margin: 0; color: white; letter-spacing: 2px; }
+        .skip { display: flex; list-style: none; gap: 12px; margin: 0; padding: 0; }
+        .skip li a { color: white; text-decoration: none; font-weight: 500; }
+        .skip li span { color: rgba(255,255,255,0.6); margin-left: 8px; }
+        .biaozhi { display: block; margin: 20px auto 0; width: 80px; opacity: 0.7; }
+        .github-btn { display: inline-flex; align-items: center; gap: 8px; background: #24292e; color: white; padding: 8px 20px; border-radius: 40px; text-decoration: none; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="forward">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="menu-toggle" id="menuToggle">☰</div>
+        <h6 class="forward_word">畅享所言</h6>
+    </div>
+    <div class="top">
+        <ul class="skip">
+            <li><a href="{{ url_for('page') }}" id="move_for">广场</a><span>|</span></li>
+            <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客</a><span>|</span></li>
+            <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <!-- 左侧工牌（展示基本信息，不可编辑） -->
+    <div class="gongpai" id="drawerSidebar">
+        <div class="my-box">
+            <img src="{{ avatar }}" class="touxiang" alt="头像" id="sidebarAvatar">
+        </div>
+        <h3 class="name" id="sidebarName">昵称：{{ username }}</h3>
+        <h3 class="group" id="sidebarGroup">组别：{{ group }}</h3>
+        <h3 class="grade" id="sidebarSignature">个性签名：{{ signature }}</h3>
+        <img src="/static/image/picture.png" class="biaozhi" alt="装饰图">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p"><h2 class="post">发布你的帖子吧！</h2></button>
+        <div style="text-align: center; margin-top: 20px; display: none;" id="closeDrawerBtnMobile">
+            <span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer;">关闭菜单</span>
+        </div>
+    </div>
+
+    <!-- 右侧主要内容（可编辑个人信息） -->
+    <div class="main-content" id="mainContent">
+        <h2 style="color:#2c5a2e; margin-bottom: 24px;">个人信息设置</h2>
+
+        <div class="avatar-section">
+            <img src="{{ avatar }}" class="avatar-preview" id="avatarPreview" alt="头像">
+            <div>
+                <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                <button class="avatar-upload-btn" id="uploadAvatarBtn">更换头像</button>
+                <button class="btn-secondary" id="saveAvatarBtn" style="display: none; margin-left: 10px;">保存头像</button>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">昵称：</div>
+            <div class="info-value" id="nicknameDisplay">{{ username }}</div>
+            <div class="info-value" style="display: none;"><input type="text" id="editNickname" value="{{ username }}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">组别：</div>
+            <div class="info-value" id="groupDisplay">{{ group }}</div>
+            <div class="info-value" style="display: none;"><input type="text" id="editGroup" value="{{ group }}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">注册邮箱：</div>
+            <div class="info-value" id="emailDisplay">{{ email }}</div>
+            <div class="info-value" style="display: none;"><input type="email" id="editEmail" value="{{ email }}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">个性签名：</div>
+            <div class="info-value" id="signatureDisplay">{{ signature }}</div>
+            <div class="info-value" style="display: none;"><textarea id="editSignature" rows="2" style="width: 100%; max-width: 400px;">{{ signature }}</textarea></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">注册时间：</div>
+            <div class="info-value">{{ reg_time }}</div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-primary" id="editInfoBtn">✏️ 修改信息</button>
+            <button class="btn-primary" id="saveAllBtn" style="display: none;">💾 保存修改</button>
+            <button class="btn-secondary" id="cancelEditBtn" style="display: none;">❌ 取消</button>
+            <button class="btn-danger" id="logoutBtn">🚪 退出登录</button>
+            <a href="https://github.com/yeyeye0212/MiniBlogHub.git" target="_blank" class="github-btn">
+                <svg height="24" width="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2C6.47598 2 2.00098 6.475 2.00098 12c0 4.425 2.86248 8.1625 6.83748 9.4875.50098.0875.68848-.2125.68848-.475 0-.2375-.0125-1.025-.0125-1.8625-2.5125.475-3.1625-.6125-3.3625-1.175-.1125-.2875-.6125-1.175-1.0375-1.4125-.35-.1875-.8625-.6375-.0125-.65.7875-.0125 1.35.725 1.5375 1.025.9 1.5375 2.3375 1.1125 2.9125.85.0875-.6375.3375-1.1125.6125-1.3625-2.225-.25-4.55-1.1125-4.55-4.9375 0-1.0875.3875-1.9875 1.025-2.6875-.1-.25-.4625-1.2625.1-2.6125 0 0 .8375-.2625 2.7375 1.025.8-.225 1.65-.3375 2.5-.3375.85 0 1.7.1125 2.5.3375 1.9-1.2875 2.7375-1.025 2.7375-1.025.5625 1.35.2 2.3625.1 2.6125.6375.7 1.025 1.5875 1.025 2.6875 0 3.8375-2.3375 4.6875-4.5625 4.9375.3625.3125.675.9125.675 1.85 0 1.3375-.0125 2.4125-.0125 2.7375 0 .2625.1875.575.6875.475 3.975-1.325 6.8375-5.0625 6.8375-9.4875 0-5.525-4.475-10-10-10z"/></svg>
+                <span>GitHub</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<script>
+    // 导航栏 hover
+    document.querySelectorAll('#move_for, #move_for2, #move_for3').forEach(el => {
+        el.addEventListener('mouseover', () => el.style.color = 'rgb(146, 222, 245)');
+        el.addEventListener('mouseout', () => el.style.color = 'white');
+    });
+
+    // 抽屉逻辑
+    const isMobile = () => window.innerWidth <= 768;
+    const drawer = document.getElementById('drawerSidebar');
+    const mainContent = document.getElementById('mainContent');
+    const overlay = document.getElementById('drawerOverlay');
+    const menuBtn = document.getElementById('menuToggle');
+    let closeBtn = null;
+    function openDrawer() { if (!isMobile()) return; drawer.classList.add('drawer-open'); mainContent.classList.add('push-right'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; if (closeBtn) closeBtn.style.display = 'block'; }
+    function closeDrawer() { if (!isMobile()) return; drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+    function toggleDrawer() { drawer.classList.contains('drawer-open') ? closeDrawer() : openDrawer(); }
+    if (menuBtn) menuBtn.addEventListener('click', toggleDrawer);
+    if (overlay) overlay.addEventListener('click', closeDrawer);
+    function addCloseButtonInMobile() {
+        if (!isMobile()) return;
+        if (!closeBtn) {
+            const container = drawer.querySelector('.my-box')?.parentNode;
+            if (container && !document.getElementById('customCloseBtn')) {
+                const btnDiv = document.createElement('div');
+                btnDiv.style.textAlign = 'center'; btnDiv.style.marginTop = '20px';
+                btnDiv.innerHTML = '<span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer; display:inline-block;">✕ 关闭菜单</span>';
+                btnDiv.id = 'customCloseBtn'; btnDiv.addEventListener('click', closeDrawer);
+                container.appendChild(btnDiv); closeBtn = btnDiv;
+            }
+        }
+    }
+    window.addEventListener('resize', function() {
+        if (!isMobile()) { drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+        else { addCloseButtonInMobile(); if (drawer.classList.contains('drawer-open') && !mainContent.classList.contains('push-right')) mainContent.classList.add('push-right'); }
+    });
+    if (isMobile()) addCloseButtonInMobile();
+
+    // ========== 个人信息编辑逻辑 ==========
+    let isEditMode = false;
+    let selectedAvatarFile = null;
+
+    const editBtn = document.getElementById('editInfoBtn');
+    const saveAllBtn = document.getElementById('saveAllBtn');
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // 显示/隐藏编辑控件
+    function toggleEditMode(enable) {
+        isEditMode = enable;
+        const displayValues = document.querySelectorAll('#nicknameDisplay, #groupDisplay, #emailDisplay, #signatureDisplay');
+        const editInputs = document.querySelectorAll('#editNickname, #editGroup, #editEmail, #editSignature');
+        if (enable) {
+            displayValues.forEach(el => el.style.display = 'none');
+            editInputs.forEach(el => el.parentElement.style.display = 'block');
+            editBtn.style.display = 'none';
+            saveAllBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+        } else {
+            displayValues.forEach(el => el.style.display = 'block');
+            editInputs.forEach(el => el.parentElement.style.display = 'none');
+            editBtn.style.display = 'inline-block';
+            saveAllBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        }
+    }
+
+    editBtn.addEventListener('click', () => toggleEditMode(true));
+    cancelBtn.addEventListener('click', () => {
+        toggleEditMode(false);
+        // 重置头像相关
+        selectedAvatarFile = null;
+        document.getElementById('avatarUpload').value = '';
+        document.getElementById('saveAvatarBtn').style.display = 'none';
+        // 恢复显示原始头像
+        document.getElementById('avatarPreview').src = "{{ avatar }}";
+    });
+
+    // 头像上传
+    const uploadBtn = document.getElementById('uploadAvatarBtn');
+    const avatarInput = document.getElementById('avatarUpload');
+    const saveAvatarBtn = document.getElementById('saveAvatarBtn');
+    const avatarPreview = document.getElementById('avatarPreview');
+    uploadBtn.addEventListener('click', () => avatarInput.click());
+    avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            selectedAvatarFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => { avatarPreview.src = e.target.result; };
+            reader.readAsDataURL(file);
+            saveAvatarBtn.style.display = 'inline-block';
+        }
+    });
+
+    // 单独保存头像
+    saveAvatarBtn.addEventListener('click', () => {
+        if (!selectedAvatarFile) return;
+        const formData = new FormData();
+        formData.append('avatar', selectedAvatarFile);
+        fetch('/update_avatar', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            body: formData
+        }).then(res => res.json()).then(data => {
+            if (data.success) {
+                alert('头像更新成功');
+                // 更新左侧边栏头像和右侧预览
+                const newUrl = data.avatar_url + '?t=' + Date.now();
+                document.getElementById('sidebarAvatar').src = newUrl;
+                avatarPreview.src = newUrl;
+                selectedAvatarFile = null;
+                saveAvatarBtn.style.display = 'none';
+            } else alert('更新失败：' + data.msg);
+        }).catch(err => alert('网络错误'));
+    });
+
+    // 保存所有修改（昵称、组别、邮箱、签名）
+    saveAllBtn.addEventListener('click', () => {
+        const newNickname = document.getElementById('editNickname').value;
+        const newGroup = document.getElementById('editGroup').value;
+        const newEmail = document.getElementById('editEmail').value;
+        const newSignature = document.getElementById('editSignature').value;
+        const formData = new FormData();
+        if (newNickname) formData.append('username', newNickname);
+        if (newGroup) formData.append('group', newGroup);
+        if (newEmail) formData.append('email', newEmail);
+        if (newSignature) formData.append('signature', newSignature);
+        // 如果有新头像未保存，一并保存
+        if (selectedAvatarFile) formData.append('avatar', selectedAvatarFile);
+        fetch('/update_profile_full', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            body: formData
+        }).then(res => res.json()).then(data => {
+            if (data.success) {
+                alert('个人信息更新成功！');
+                window.location.reload();
+            } else alert('更新失败：' + data.msg);
+        }).catch(err => alert('网络错误'));
+    });
+
+    // 退出登录弹窗
+    logoutBtn.addEventListener('click', () => {
+        if (confirm('确认退出登录吗？')) {
+            window.location.href = "{{ url_for('logout') }}";
+        }
+    });
+</script>
+</body>
+</html>

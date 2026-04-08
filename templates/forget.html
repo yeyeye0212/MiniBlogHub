@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>重置密码 - Elab多人博客</title>
+    <!-- 引入春色主题样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhance.css') }}">
+    <style>
+        /* ========== 页面特有样式（轮播图、动画、表单微调） ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 顶部动画容器 - 不使用绝对定位，改用flex */
+        .hero-container {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 40px 0 20px;
+            text-align: center;
+            border-radius: 0 0 48px 48px;
+            margin-bottom: 30px;
+        }
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(120deg, #2e4a1f, #7cb342);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        .hero-sub {
+            color: #558b2f;
+            font-size: 1.2rem;
+        }
+        /* 顶部色块动画（保留原有创意，改为flex内联） */
+        .color-bars {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 900px;
+        }
+        .bar-left {
+            height: 8px;
+            background: #7cb342;
+            width: 70%;
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+        .bar-right {
+            height: 8px;
+            background: #ff8a5c;
+            width: 30%;
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+        .hero-container:hover .bar-left {
+            width: 60%;
+        }
+        .hero-container:hover .bar-right {
+            width: 40%;
+        }
+
+        /* 轮播图容器 */
+        .carousel-wrapper {
+            max-width: 1100px;
+            margin: 0 auto 40px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 48px;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 32px;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+        }
+        .carousel-slides {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            object-fit: cover;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .carousel-btn:hover {
+            background: rgba(124,179,66,0.8);
+            transform: translateY(-50%) scale(1.05);
+        }
+        .carousel-btn-left { left: 20px; }
+        .carousel-btn-right { right: 20px; }
+        .dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dot.active {
+            background: #7cb342;
+            transform: scale(1.2);
+        }
+
+        /* 表单卡片 - 毛玻璃效果 */
+        .form-card {
+            max-width: 500px;
+            margin: 0 auto 60px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 32px 28px;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+            border: 1px solid rgba(124,179,66,0.3);
+        }
+        .form-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2e4a1f;
+            margin-bottom: 28px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #c5e1a5;
+            border-radius: 60px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #7cb342;
+            box-shadow: 0 0 0 3px rgba(124,179,66,0.2);
+        }
+        .captcha-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .captcha-group input {
+            flex: 1;
+        }
+        .captcha-code {
+            background: #e8f5e9;
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: monospace;
+            padding: 8px 20px;
+            border-radius: 60px;
+            cursor: pointer;
+            color: #2e4a1f;
+            letter-spacing: 4px;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .captcha-code:hover {
+            background: #c5e1a5;
+            transform: scale(0.98);
+        }
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #7cb342, #558b2f);
+            border: none;
+            border-radius: 60px;
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 12px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px #558b2f;
+        }
+        .form-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.95rem;
+        }
+        .form-footer a {
+            color: #7cb342;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Flash消息容器（覆盖enhance.css位置） */
+        #flash-container {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1000;
+            width: 300px;
+        }
+        .flash-message {
+            padding: 12px 20px;
+            border-radius: 60px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- 固定导航栏（与enhance.css统一） -->
+<div class="forward">
+    <h6 class="forward_word">在这里，让科创飞起来</h6>
+    <div class="top">
+        <ul class="skip">
+            <li><a href="{{ url_for('page') }}">广场</a><span>|</span></li>
+            <li><a href="{{ url_for('my_blog1') }}">个人博客</a><span>|</span></li>
+            <li><a href="{{ url_for('my_information') }}">关于我</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Flash消息容器 -->
+<div id="flash-container"></div>
+
+<!-- 顶部英雄区（含动画色块） -->
+<div class="hero-container">
+    <h1 class="hero-title">Hi！Welcome to Elab多人博客</h1>
+    <p class="hero-sub">重置密码，找回你的账号</p>
+    <div class="color-bars">
+        <div class="bar-left"></div>
+        <div class="bar-right"></div>
+    </div>
+</div>
+
+<!-- 轮播图区（团队剪影） -->
+<div class="carousel-wrapper">
+    <div class="carousel-container">
+        <div class="carousel-slides">
+            <img class="carousel-slide active" src="{{ url_for('static', filename='image/elab.jpeg') }}" alt="团队1">
+            <img class="carousel-slide" src="{{ url_for('static', filename='image/elab2.jpeg') }}" alt="团队2">
+            <img class="carousel-slide" src="{{ url_for('static', filename='image/elab3.jpg') }}" alt="团队3">
+            <img class="carousel-slide" src="{{ url_for('static', filename='image/elab4.jpg') }}" alt="团队4">
+            <img class="carousel-slide" src="{{ url_for('static', filename='image/elab5.jpg') }}" alt="团队5">
+        </div>
+        <button class="carousel-btn carousel-btn-left" id="prevBtn">‹</button>
+        <button class="carousel-btn carousel-btn-right" id="nextBtn">›</button>
+        <div class="dots" id="dotsContainer"></div>
+    </div>
+    <h2 class="biaoti" style="text-align: center; margin-top: 20px;">团队剪影</h2>
+</div>
+
+<!-- 重置密码表单卡片 -->
+<div class="form-card">
+    <h2 class="form-title">重置密码</h2>
+    <form method="POST" action="{{ url_for('reset_password') }}" id="resetForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="input-group">
+            <input type="text" name="username" placeholder="用户名" required>
+        </div>
+        <div class="input-group">
+            <input type="email" name="email" placeholder="邮箱" required>
+        </div>
+        <div class="input-group">
+            <input type="password" name="password" placeholder="新密码" required>
+        </div>
+        <div class="input-group">
+            <input type="password" name="confirm_password" placeholder="确认新密码" required>
+        </div>
+        <div class="input-group captcha-group">
+            <input type="text" name="verification_code" placeholder="验证码" required>
+            <span class="captcha-code" id="code_show" onclick="location.reload()">{{ verification_code }}</span>
+        </div>
+        <button type="submit" class="submit-btn">重置密码</button>
+        <div class="form-footer">
+            <p>已有账户？<a href="{{ url_for('log_in') }}">登录获得更多精彩</a></p>
+        </div>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='jquery-4.0.0.min.js') }}"></script>
+<script>
+    // ========== 轮播图逻辑 ==========
+    let currentIndex = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dotsContainer = document.getElementById('dotsContainer');
+    const totalSlides = slides.length;
+
+    // 创建圆点
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsContainer.appendChild(dot);
+    }
+    const dots = document.querySelectorAll('.dot');
+
+    function goToSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+        currentIndex = index;
+    }
+
+    function nextSlide() {
+        let newIndex = (currentIndex + 1) % totalSlides;
+        goToSlide(newIndex);
+    }
+    function prevSlide() {
+        let newIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        goToSlide(newIndex);
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        clearInterval(autoTimer);
+        nextSlide();
+        startAutoPlay();
+    });
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        clearInterval(autoTimer);
+        prevSlide();
+        startAutoPlay();
+    });
+
+    let autoTimer;
+    function startAutoPlay() {
+        autoTimer = setInterval(nextSlide, 5000);
+    }
+    startAutoPlay();
+
+    // ========== Flash消息函数 ==========
+    function showFlashMessage(message, category = 'success') {
+        const container = document.getElementById('flash-container');
+        const flashDiv = document.createElement('div');
+        flashDiv.className = `flash-message flash-${category}`;
+        flashDiv.textContent = message;
+        container.appendChild(flashDiv);
+        flashDiv.style.opacity = 0;
+        setTimeout(() => {
+            flashDiv.style.opacity = 1;
+            flashDiv.style.transition = 'opacity 0.3s';
+        }, 10);
+        setTimeout(() => {
+            flashDiv.style.opacity = 0;
+            setTimeout(() => flashDiv.remove(), 300);
+        }, 3000);
+    }
+
+    // ========== 表单前端验证 ==========
+    $('#resetForm').on('submit', function(e) {
+        const username = $('input[name="username"]').val().trim();
+        const email = $('input[name="email"]').val().trim();
+        const password = $('input[name="password"]').val();
+        const confirm = $('input[name="confirm_password"]').val();
+        const verifyCode = $('input[name="verification_code"]').val().trim();
+        const showCode = $('#code_show').text().trim();
+
+        if (!username) { showFlashMessage('用户名不能为空！', 'error'); e.preventDefault(); return false; }
+        if (!email) { showFlashMessage('邮箱不能为空！', 'error'); e.preventDefault(); return false; }
+        if (!password) { showFlashMessage('新密码不能为空！', 'error'); e.preventDefault(); return false; }
+        if (password !== confirm) { showFlashMessage('两次输入的新密码不一致！', 'error'); e.preventDefault(); return false; }
+        if (!verifyCode) { showFlashMessage('请输入验证码！', 'error'); e.preventDefault(); return false; }
+        if (verifyCode !== showCode) { showFlashMessage('验证码输入错误！', 'error'); e.preventDefault(); return false; }
+
+        showFlashMessage('正在重置密码...', 'success');
+        return true; // 允许表单提交
+    });
+
+    // 页面加载时显示后端flash消息（如果有）
+    $(document).ready(function() {
+        // 后端flash消息（通过模板变量传递）
+        const flashMessages = {{ get_flashed_messages(with_categories=true) | tojson }};
+        if (flashMessages && flashMessages.length) {
+            flashMessages.forEach(([category, msg]) => {
+                showFlashMessage(msg, category);
+            });
+        }
+    });
+</script>
+</body>
+</html>

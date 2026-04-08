@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>帖子详情 - Elab多人博客</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhance.css') }}">
+    <style>
+        /* 统一布局 + 抽屉侧边栏 */
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background: #f5f7fa; }
+        .content-wrapper { position: relative; display: flex; flex-wrap: nowrap; max-width: 1400px; margin: 20px auto 0; padding: 0 20px; gap: 24px; }
+        .gongpai { flex: 0 0 280px; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); padding: 20px 16px 30px; transition: all 0.3s ease; height: fit-content; position: relative; z-index: 10; }
+        .main-content { flex: 1; min-width: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 0 12px; gap: 0; }
+            .gongpai { position: absolute; top: 0; left: 0; width: 280px; height: auto; max-height: 90vh; overflow-y: auto; margin: 0; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); z-index: 1050; background: white; display: block; }
+            .gongpai.drawer-open { transform: translateX(0); }
+            .main-content { margin-left: 0; transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+            .main-content.push-right { margin-left: 280px; }
+            .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px); z-index: 1040; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+            .drawer-overlay.active { opacity: 1; visibility: visible; }
+            .forward { position: relative; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+            .menu-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 30px; cursor: pointer; font-size: 28px; color: white; margin-right: 12px; }
+            .top { flex: 1; }
+            .skip { justify-content: flex-end; }
+        }
+        @media (min-width: 769px) { .menu-toggle, .drawer-overlay { display: none; } }
+        /* 帖子详情样式 */
+        .blog_show { background: white; border-radius: 28px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+        .button_back { background: #e9ecef; border: none; border-radius: 40px; padding: 8px 20px; cursor: pointer; margin-bottom: 20px; font-size: 1rem; }
+        .title_big { font-size: 2rem; margin: 10px 0; color: #2c5a2e; }
+        .author, .time { color: #6c757d; margin: 5px 0; }
+        .box-content-show { background: #f8f9fa; padding: 16px; border-radius: 20px; margin: 20px 0; }
+        .blog-content_post { line-height: 1.6; white-space: pre-wrap; }
+        .biaozhi2 { width: 100px; margin: 20px 0; border-radius: 20px; }
+        .container, .container2 { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; background: #f1f3f5; padding: 8px 16px; border-radius: 40px; }
+        .container svg, .container2 svg { width: 24px; height: 24px; fill: none; stroke: #2c5a2e; }
+        .container input, .container2 input { display: none; }
+        .container input:checked + svg, .container2 input:checked + svg { fill: #ff6b6b; stroke: #ff6b6b; }
+        .comment-form { margin-top: 20px; background: #f8f9fa; padding: 20px; border-radius: 20px; }
+        .comment-input { width: 100%; border-radius: 20px; border: 1px solid #ced4da; padding: 12px; resize: vertical; }
+        .submit-btn { background: #5c9e6b; border: none; color: white; padding: 8px 20px; border-radius: 40px; cursor: pointer; margin-top: 10px; }
+        .blog-content-review { background: white; border: 1px solid #e9ecef; border-radius: 20px; padding: 16px; margin-bottom: 16px; position: relative; }
+        .delete-button { position: absolute; right: 16px; top: 16px; background: none; border: none; cursor: pointer; }
+        .trash-svg { width: 24px; height: 24px; }
+        .flash-message { position: fixed; top: 80px; right: 20px; padding: 12px 24px; border-radius: 40px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1100; }
+        .flash-success { background: #d4edda; color: #155724; }
+        .flash-error { background: #f8d7da; color: #721c24; }
+        .button_p { margin-top: 24px; width: 100%; background: #5c9e6b; border: none; border-radius: 40px; padding: 10px 0; cursor: pointer; }
+        .post { font-size: 1.2rem; margin: 0; color: white; text-align: center; }
+        .touxiang { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #cfe3cf; }
+        .my-box { text-align: center; margin-bottom: 16px; }
+        .name, .group, .grade { margin: 12px 0; font-size: 1rem; text-align: center; }
+        .forward { background: #4c7a4a; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .forward_word { font-size: 1.8rem; margin: 0; color: white; letter-spacing: 2px; }
+        .skip { display: flex; list-style: none; gap: 12px; margin: 0; padding: 0; }
+        .skip li a { color: white; text-decoration: none; font-weight: 500; }
+        .skip li span { color: rgba(255,255,255,0.6); margin-left: 8px; }
+        .biaozhi { display: block; margin: 20px auto 0; width: 80px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<div class="forward">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="menu-toggle" id="menuToggle">☰</div>
+        <h6 class="forward_word">畅享所言</h6>
+    </div>
+    <div class="top">
+        <ul class="skip">
+            <li><a href="{{ url_for('page') }}" id="move_for">广场</a><span>|</span></li>
+            <li><a href="{{ url_for('my_blog1') }}" id="move_for2">个人博客</a><span>|</span></li>
+            <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <div class="gongpai" id="drawerSidebar">
+        <div class="my-box"><img src="{{ avatar }}" class="touxiang" alt="头像"></div>
+        <h3 class="name">昵称：{{ username }}</h3>
+        <h3 class="group">组别：{{ group }}</h3>
+        <h3 class="grade">个性签名：{{ signature }}</h3>
+        <img src="/static/image/picture.png" class="biaozhi" alt="装饰图">
+        <button onclick="location.href='{{ url_for('post') }}'" class="button_p"><h2 class="post">发布你的帖子吧！</h2></button>
+        <div style="text-align: center; margin-top: 20px; display: none;" id="closeDrawerBtnMobile">
+            <span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer;">关闭菜单</span>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="blog_show">
+            <button class="button_back" onclick="history.back()">← 返回</button>
+            <h4 class="title_big">{{ post.title }}</h4>
+            <div class="author">发布者：{{ post.author.username }}</div>
+            <div class="time">发布时间：{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+            <p class="box-content-show">{{ post.intro }}</p>
+            <div class="blog-content_post" id="textContent">{{ post.content | safe }}</div>
+            <img src="{{ post.author.avatar if post.author and post.author.avatar else '/static/image/look.jpg' }}" class="biaozhi2" width="130">
+
+            <div style="display: flex; gap: 20px; margin: 20px 0;">
+                <label class="container">
+                    <input type="checkbox" id="collectCheck">
+                    <svg viewBox="0 0 32 32"><path d="M29.845,17.099l-2.489,8.725C26.989,27.105,25.804,28,24.473,28H11c-0.553,0-1-0.448-1-1V13c0-0.215,0.069-0.425,0.198-0.597l5.392-7.24C16.188,4.414,17.05,4,17.974,4C19.643,4,21,5.357,21,7.026V12h5.002c1.265,0,2.427,0.579,3.188,1.589C29.954,14.601,30.192,15.88,29.845,17.099z"/><path d="M7,12H3c-0.553,0-1,0.448-1,1v14c0,0.552,0.447,1,1,1h4c0.553,0,1-0.448,1-1V13C8,12.448,7.553,12,7,12z M5,25.5c-0.828,0-1.5-0.672-1.5-1.5c0-0.828,0.672-1.5,1.5-1.5s1.5,0.672,1.5,1.5S5.828,25.5,5,25.5z"/></svg>
+                    <span class="icon-num2" id="collectNum">{{ post.collect_count }}</span>
+                </label>
+                <label class="container2">
+                    <input type="checkbox" id="likeCheck">
+                    <svg viewBox="0 0 24 24"><path d="M9.362,9.158c0,0-3.16,0.35-5.268,0.584c-0.19,0.023-0.358,0.15-0.421,0.343s0,0.394,0.14,0.521c1.566,1.429,3.919,3.569,3.919,3.569c-0.002,0-0.646,3.113-1.074,5.19c-0.036,0.188,0.032,0.387,0.196,0.506c0.163,0.119,0.373,0.121,0.538,0.028c1.844-1.048,4.606-2.624,4.606-2.624s2.763,1.576,4.604,2.625c0.168,0.092,0.378,0.09,0.541-0.029c0.164-0.119,0.232-0.318,0.195-0.505c-0.428-2.078-1.071-5.191-1.071-5.191s2.353-2.14,3.919-3.566c0.14-0.131,0.202-0.332,0.14-0.524s-0.23-0.319-0.42-0.341c-2.108-0.236-5.269-0.586-5.269-0.586s-1.31-2.898-2.183-4.83c-0.082-0.173-0.254-0.294-0.456-0.294s-0.375,0.122-0.453,0.294C10.671,6.26,9.362,9.158,9.362,9.158z"/></svg>
+                    <span class="icon-num" id="likeNum">{{ post.like_count }}</span>
+                </label>
+            </div>
+
+            <button id="commentBtn" style="background:#5c9e6b; border:none; color:white; padding:8px 24px; border-radius:40px; cursor:pointer;">评论</button>
+
+            <div class="comment-form" id="commentForm" style="display: none;">
+                <textarea class="comment-input" placeholder="请输入你的评论..."></textarea>
+                <button class="submit-btn" id="submitComment">提交评论</button>
+            </div>
+
+            <h2 style="margin-top: 40px;">评论区</h2>
+            <div id="commentsContainer">
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div class="blog-content-review" id="comment-{{ comment.id }}">
+                        <div class="author-review">发布者：{{ comment.user.username }}</div>
+                        <div class="time-review">发布时间：{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                        <p class="box-content-review">{{ comment.content }}</p>
+                        <img src="{{ comment.author_avatar }}" width="40" style="border-radius:50%;">
+                        {% if comment.user.username == username %}
+                        <button class="delete-button" onclick="showDeleteCommentConfirm('{{ comment.id }}', '{{ post.id }}')">
+                            <svg class="trash-svg" viewBox="0 -10 64 74"><rect x="16" y="24" width="32" height="30" rx="3" ry="3" fill="#e74c3c"></rect><g transform-origin="12 18"><rect x="12" y="12" width="40" height="6" rx="2" ry="2" fill="#c0392b"></rect><rect x="26" y="8" width="12" height="4" rx="2" ry="2" fill="#c0392b"></rect></g></svg>
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="blog-content-review" style="text-align: center;">暂无评论，快来抢沙发吧！</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div id="flash-container"></div>
+
+<script>
+    // 导航栏 hover
+    document.querySelectorAll('#move_for, #move_for2, #move_for3').forEach(el => {
+        el.addEventListener('mouseover', () => el.style.color = 'rgb(146, 222, 245)');
+        el.addEventListener('mouseout', () => el.style.color = 'white');
+    });
+
+    // 抽屉逻辑
+    const isMobile = () => window.innerWidth <= 768;
+    const drawer = document.getElementById('drawerSidebar');
+    const mainContent = document.getElementById('mainContent');
+    const overlay = document.getElementById('drawerOverlay');
+    const menuBtn = document.getElementById('menuToggle');
+    let closeBtn = null;
+    function openDrawer() { if (!isMobile()) return; drawer.classList.add('drawer-open'); mainContent.classList.add('push-right'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; if (closeBtn) closeBtn.style.display = 'block'; }
+    function closeDrawer() { if (!isMobile()) return; drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+    function toggleDrawer() { drawer.classList.contains('drawer-open') ? closeDrawer() : openDrawer(); }
+    if (menuBtn) menuBtn.addEventListener('click', toggleDrawer);
+    if (overlay) overlay.addEventListener('click', closeDrawer);
+    function addCloseButtonInMobile() {
+        if (!isMobile()) return;
+        if (!closeBtn) {
+            const container = drawer.querySelector('.my-box')?.parentNode;
+            if (container && !document.getElementById('customCloseBtn')) {
+                const btnDiv = document.createElement('div');
+                btnDiv.style.textAlign = 'center'; btnDiv.style.marginTop = '20px';
+                btnDiv.innerHTML = '<span style="background:#e9ecef; padding:8px 20px; border-radius:40px; font-size:14px; cursor:pointer; display:inline-block;">✕ 关闭菜单</span>';
+                btnDiv.id = 'customCloseBtn'; btnDiv.addEventListener('click', closeDrawer);
+                container.appendChild(btnDiv); closeBtn = btnDiv;
+            }
+        }
+    }
+    window.addEventListener('resize', function() {
+        if (!isMobile()) { drawer.classList.remove('drawer-open'); mainContent.classList.remove('push-right'); overlay.classList.remove('active'); document.body.style.overflow = ''; if (closeBtn) closeBtn.style.display = 'none'; }
+        else { addCloseButtonInMobile(); if (drawer.classList.contains('drawer-open') && !mainContent.classList.contains('push-right')) mainContent.classList.add('push-right'); }
+    });
+    if (isMobile()) addCloseButtonInMobile();
+
+    // 评论表单切换
+    const commentBtn = document.getElementById('commentBtn');
+    const commentForm = document.getElementById('commentForm');
+    let isFormShow = false;
+    commentBtn.addEventListener('click', () => {
+        if (!isFormShow) { commentForm.style.display = 'block'; commentBtn.innerHTML = '收起评论'; isFormShow = true; }
+        else { commentForm.style.display = 'none'; commentBtn.innerHTML = '评论'; isFormShow = false; }
+    });
+
+    // 提交评论
+    document.getElementById('submitComment').addEventListener('click', () => {
+        const content = document.querySelector('.comment-input').value.trim();
+        if (!content) return alert('请输入评论内容');
+        const formData = new FormData();
+        formData.append('post_id', "{{ post.id }}");
+        formData.append('content', content);
+        fetch("{{ url_for('submit_comment') }}", {
+            method: 'POST',
+            headers: { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            body: formData
+        }).then(res => { if (res.ok) location.reload(); else alert('提交失败'); });
+    });
+
+    // 点赞收藏
+    const collectCheck = document.getElementById('collectCheck');
+    const likeCheck = document.getElementById('likeCheck');
+    const collectNum = document.getElementById('collectNum');
+    const likeNum = document.getElementById('likeNum');
+    const postId = "{{ post.id }}";
+    const isLiked = {{ 'true' if is_liked else 'false' }};
+    const isCollected = {{ 'true' if is_collected else 'false' }};
+    likeCheck.checked = isLiked; collectCheck.checked = isCollected;
+    async function sendRequest(type) {
+        const res = await fetch(`/post/${type}/${postId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
+        });
+        return await res.json();
+    }
+    likeCheck.addEventListener('change', async function() {
+        const checked = this.checked; this.disabled = true;
+        const result = await sendRequest('like');
+        if (result.success) likeNum.textContent = result.new_count;
+        else this.checked = !checked, alert(result.msg);
+        this.disabled = false;
+    });
+    collectCheck.addEventListener('change', async function() {
+        const checked = this.checked; this.disabled = true;
+        const result = await sendRequest('collect');
+        if (result.success) collectNum.textContent = result.new_count;
+        else this.checked = !checked, alert(result.msg);
+        this.disabled = false;
+    });
+
+    // 删除评论
+    let currentCommentId, currentPostId;
+    window.showDeleteCommentConfirm = (commentId, postId) => {
+        currentCommentId = commentId; currentPostId = postId;
+        const bg = document.createElement('div'); bg.className = 'whole';
+        bg.style.position = 'fixed'; bg.style.top = 0; bg.style.left = 0; bg.style.width = '100vw'; bg.style.height = '100vh'; bg.style.backgroundColor = 'rgba(0,0,0,0.5)'; bg.style.zIndex = 2000;
+        const box = document.createElement('div'); box.className = 'alert_box';
+        box.style.position = 'absolute'; box.style.top = '30%'; box.style.left = '50%'; box.style.transform = 'translateX(-50%)'; box.style.backgroundColor = 'white'; box.style.padding = '30px'; box.style.borderRadius = '20px'; box.style.textAlign = 'center';
+        box.innerHTML = `<h3>确认删除这条评论？</h3><div style="margin-top:20px;"><button onclick="deleteComment()" style="background:#e74c3c; color:white; border:none; padding:8px 20px; border-radius:40px; margin-right:20px;">删除</button><button onclick="document.querySelector('.whole').remove()" style="background:#95a5a6; color:white; border:none; padding:8px 20px; border-radius:40px;">取消</button></div>`;
+        bg.appendChild(box); document.body.appendChild(bg);
+    };
+    window.deleteComment = () => {
+        fetch('/delete_comment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            body: `comment_id=${currentCommentId}&post_id=${currentPostId}`
+        }).then(res => res.json()).then(data => {
+            document.querySelector('.whole')?.remove();
+            if (data.success) document.getElementById(`comment-${currentCommentId}`)?.remove();
+            else alert('删除失败');
+        });
+    };
+</script>
+</body>
+</html>
