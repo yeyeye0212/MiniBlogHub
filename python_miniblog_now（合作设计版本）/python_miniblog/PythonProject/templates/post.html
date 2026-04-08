@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布你的帖子吧！</title>
+    <!-- 1. 静态资源路径改为Flask格式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='post.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='page.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            z-index: 0;
+        }
+
+        .forward {
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            left: 0;
+            margin: 0;
+            z-index: 1;
+        }
+
+        .forward_word {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            z-index: 2;
+        }
+
+        .top {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            z-index: 3;
+        }
+
+        .skip {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .skip li {
+            color: white;
+        }
+
+        .skip li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .my-box {
+            width: 300px;
+            height: 400px;
+            background-color: rgb(91, 165, 250);
+            position: absolute;
+            border-radius: 10px;
+            top: 70px;
+            z-index: 3;
+        }
+
+        .silk {
+            width: 50px;
+            height: 150px;
+            z-index: 5;
+            background-color: sienna;
+            left: 120px;
+            position: fixed;
+        }
+
+        .gongpai {
+            height: 100%;
+            width: 320px;
+            position: fixed;
+            z-index: 1;
+            background-color: rgb(141, 220, 244);
+            border-radius: 0px 0px 10px 10px;
+            top: 50px;
+        }
+
+        .open1 {
+            height: 30px;
+            width: 100px;
+            background-color: rgb(141, 220, 244);
+            top: 120px;
+            left: 95px;
+            z-index: 4;
+            position: absolute;
+            border-radius: 10px;
+        }
+
+        .touxiang {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            object-fit: cover;
+            object-position: center;
+            top: 100px;
+            left: 70px;
+            border: 2px solid white;
+        }
+
+        .biaozhi {
+            position: absolute;
+            top: 480px;
+            left: 10%;
+        }
+
+        .blog-title {
+            font-size: 30px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(11, 138, 242);
+            top: 5px;
+            left: 10px;
+            position: absolute;
+        }
+
+        .biaozhi2 {
+            position: absolute;
+            bottom: 5px;
+            left: 1%;
+            border-radius: 25px;
+        }
+
+        .hello-word {
+            font-size: 40px;
+            font-family: 'Times New Roman', Times, serif;
+            color: black;
+            font-weight: 800;
+            left: 2%;
+            position: absolute;
+            top: 80px;
+        }
+
+        .post_title1 {
+            font-size: 26px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(0, 0, 0);
+            top: 105px;
+            left: 60px;
+            position: absolute;
+        }
+
+        .post_int {
+            font-size: 26px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(0, 0, 0);
+            top: 220px;
+            left: 60px;
+            position: absolute;
+        }
+
+        .post_all {
+            font-size: 26px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(0, 0, 0);
+            top: 300px;
+            left: 60px;
+            position: absolute;
+        }
+
+        .sorts {
+            font-size: 26px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(0, 0, 0);
+            top: 680px;
+            left: 60px;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏：2. 跳转路径改为Flask路由 -->
+    <div class="forward">
+        <h6 class="forward_word">畅享所言</h6>
+        <div class="top">
+            <ul class="skip" type="none">
+                <li><a href="{{ url_for('page') }}" id="move_for">广场 </a><span>|</span></li>
+                <li><a href="{{ url_for('page') }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_information') }}" id="move_for3">关于我 </a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!--工牌（个人信息）：保留原有样式，图片路径改为Flask格式 -->
+    <div class="gongpai">
+        <div class="silk"></div>
+        <div class="open1"> </div>
+        <div class="my-box">
+            <img src="/static/image/look.jpg" class="touxiang">
+        </div>
+        <h3 class="name">昵称：{{ username }}</h3>
+        <h3 class="group">组别：极创组</h3>
+        <h3 class="grade">年级：大一小登</h3>
+        <img src="/static/image/picture.png" width="250px" height="250px" class="biaozhi">
+
+        <div class="wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="shadow"></div>
+            <div class="shadow"></div>
+            <div class="shadow"></div>
+        </div>
+    </div>
+
+    <div class="content">
+        <h2 class="hello-word" style="left:35%;">发布你的帖子吧！</h2>
+    </div>
+
+
+    <form method="POST" action="{{ url_for('submit_post') }}">
+        <!-- 发帖设计：4. 给输入框加name属性 -->
+        <div class="blog2">
+            <button type="submit"> <!-- 改为form提交按钮 -->
+                <h2 class="post">发布</h2>
+            </button>
+            <h2 class="blog-title">在框中填入需要的信息</h2>
+            <h4 class="post_title1">标题：</h4>
+            <input class="input" placeholder="标题不超过20个字" name="title" id="title" maxlength="20" rows="3" cols="30"
+                style="font-size:25px;">
+
+            <h4 class="post_int">简介：</h4>
+            <input class="input2" placeholder="用一句话简单介绍你的帖子" name="intro" type="text" maxlength="40" style="font-size:18px;">
+
+            <h4 class="post_all">全文：</h4>
+            <textarea class="input3" placeholder="输入正文完整内容" name="content" id="content"></textarea>
+
+            <h4 class="sorts">分区：</h4>
+            <div class="mydict2">
+                <div>
+                    <label>
+                        <input type="radio" name="category" value="技术求助" checked="">
+                        <span>技术求助</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category" value="日常休闲">
+                        <span>日常休闲</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category" value="组队请求">
+                        <span>组队请求</span>
+                    </label>
+                      <!-- 添加修改表单 -->
+                    <form method="POST" action="{{ url_for('update_profile') }}">
+                        <input type="text" name="signature" value="{{ signature }}">
+                        <button type="submit">保存修改</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>

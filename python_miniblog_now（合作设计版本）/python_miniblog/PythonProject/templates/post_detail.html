@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>帖子详情</title>
+</head>
+<body>
+      <h1>{{ post.title }}</h1>
+    <p>作者: {{ post.author.username }}</p>
+    <p>发布时间: {{ post.created_at }}</p>
+    <div>{{ post.content }}</div>
+    <a href="{{ url_for('page') }}">返回列表</a>
+
+</body>
+</html>

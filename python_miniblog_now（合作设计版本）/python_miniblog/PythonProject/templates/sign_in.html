@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elab多人博客ξ( ✿＞◡❛)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='outside.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            position: absolute;
+            color: rgb(51, 97, 153);
+            font-size: 50px;
+            text-align: center;
+            top: 30px;
+            left: 23%;
+            font-family: 'Times New Roman', Times, serif;
+            z-index: 1;
+        }
+
+        .top-container {
+            position: relative;
+            width: 1680px;
+            height: 175px;
+            top: 50px;
+            margin-bottom: 0;
+        }
+
+        .top {
+            position: absolute;
+            /* 绝对定位，和.top2重叠在容器内 */
+            left: 0;
+            top: 5px;
+            width: 1680px;
+            height: 170px;
+            background-color: rgb(205, 235, 244);
+            overflow: visible;
+            animation: identifier 2.5s ease-in-out infinite alternate;
+            animation-play-state: paused;
+            z-index: 0;
+            border-radius: 5px, 5px, 5px, 5px;
+        }
+
+        .top2 {
+            position: absolute;
+            /* 绝对定位，贴在.top右侧 */
+            right: 0;
+            /* 固定在容器右侧 */
+            top: 5px;
+            width: 0;
+            /* 初始宽度0，和动画起始值一致 */
+            height: 170px;
+            background-color: red;
+            overflow: visible;
+            animation: identifier2 2.5s ease-in-out infinite alternate;
+            animation-play-state: paused;
+            z-index: 0;
+            border-radius: 5px, 5px, 5px, 5px;
+        }
+
+        .top-container:hover .top,
+        .top-container:hover .top2 {
+            animation-play-state: running;
+        }
+
+        @keyframes identifier {
+            0% {
+                width: 1680px;
+                background-color: rgb(194, 234, 246);
+            }
+
+            100% {
+                width: 1400px;
+                background-color: rgb(79, 208, 248);
+            }
+        }
+
+        @keyframes identifier2 {
+            0% {
+                width: 0;
+                background-color: rgb(255, 176, 176);
+            }
+
+            100% {
+                width: 280px;
+                background-color: rgb(242, 0, 0);
+            }
+        }
+
+        .separator {
+            position: relative;
+            top: 35px;
+            /* 适配容器位置 */
+            color: rgb(2, 164, 245);
+            font-size: 30px;
+            line-height: 1;
+            margin: 0 auto;
+            /* 居中 */
+            white-space: nowrap;
+            font-weight: 1000;
+            width: fit-content;
+        }
+
+        .biaoti {
+            position: absolute;
+            font-size: 30px;
+            left: 15px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            color:rgb(19, 78, 150);
+        }
+
+        .box {
+            display: flex;
+            width: 1680px;
+            height: 680px;
+            position: relative;
+            top: 38px;
+            margin: 0 auto;
+            /* 居中 */
+            background-color: aliceblue;
+            margin-left: 0;
+        }
+
+        .img {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            opacity: 0;
+            transition: all 3.0s;
+        }
+
+        .img:nth-child(1) {
+            opacity: 1;
+        }
+
+        .change_left {
+            position: relative;
+            width: 50px;
+            height: 70px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: darkgrey;
+            text-align: center;
+            top: 350px;
+            border-radius: 0 5px 5px 0;
+            line-height: 60px;
+            font-size: 50px;
+            left: 10px;
+            cursor: pointer;
+        }
+
+        .change_left:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
+
+        .change_right {
+            position: relative;
+            width: 50px;
+            height: 70px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: darkgrey;
+            left: 860px;
+            text-align: center;
+            top: 350px;
+            border-radius: 5px 0 0 5px;
+            line-height: 60px;
+            font-size: 50px;
+            cursor: pointer;
+        }
+
+        .change_right:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dot>ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .dot {
+            position: absolute;
+            bottom: 55px;
+            left: 43%;
+        }
+
+        .dot li {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: white;
+            float: left;
+            margin-right: 30px;
+            cursor: pointer;
+        }
+
+        .dot li:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .forward {
+            position: fixed;
+            z-index: 999;
+            width: 1680px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: visible;
+            left: 0%;
+            margin-left: 0;
+        }
+
+        .forward_word {
+            position: absolute;
+            color: white;
+            font-size: 18px;
+            text-align: left;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            margin-left: 0;
+        }
+        /* 提示框样式：固定在表单上方，和表单保留10px距离 */
+        #flash-container {
+            position: absolute;
+            right: 190px;
+            top: 5px; /* 表单top是50px，这里40px刚好比表单上沿高10px */
+            width: 300px; /* 和表单宽度一致 */
+            z-index: 10; /* 确保在表单上方显示 */
+        }
+        .flash-message {
+            padding: 10px 20px;
+            margin: 0 auto;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            text-align: center;
+            line-height: 1.5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .flash-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        .flash-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="forward">
+        <h6 class="forward_word">在这里，让科创飞起来</h6>
+    </div>
+
+    <div class="top-container">
+        <div class="top">
+            <h1>Hi！Welcome to Elab多人博客ξ( ✿＞◡❛)！</h1>
+            <img src="{{url_for('static',filename='image/picture.png')}}" width="180px" height="180px">
+        </div>
+        <div class="top2"></div>
+    </div>
+
+    <h5 class="separator">——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— ——— —</h5>
+
+    <div class="box">
+        <div class="img"><img src="{{ url_for('static', filename='image/elab.jpeg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab2.jpeg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab3.jpg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab4.jpg') }}" width="950px" height="600px"></div>
+        <div class="img"><img src="{{ url_for('static', filename='image/elab5.jpg') }}" width="950px" height="600px"></div>
+
+        <div class="change_left">&lt;</div>
+        <div class="change_right">&gt;</div>
+        <div class="dot">
+            <ul>
+                <li class="push"></li>
+                <li class="push"></li>
+                <li class="push"></li>
+                <li class="push"></li>
+                <li class="push"></li>
+            </ul>
+        </div>
+        <h2 class="biaoti" font-weight="bold">团队剪影</h2>
+
+        <div id="flash-container"></div>
+
+        <form class="form" method="POST" action="{{url_for('sign_in')}}">
+            <p class="form-title22">注册你的博客账号</p>
+            <div class="input-container2">
+                <input type="text" name='username' placeholder="输入用户名" class="username">
+                <span>
+                </span>
+            </div>
+            <div class="input-container2">
+                <input type="email" name='email' placeholder="输入邮箱" class="email">
+            </div>
+            <div class="input-container2">
+                <input type="password" name='password' placeholder="输入密码" class="pwd">
+            </div>
+            <div class="input-container2">
+                <input type="password" name='confirm_password' placeholder="再次输入密码" class="confirm-pwd">
+            </div>
+            <div class="input-container3">
+                <input type="text" name='verification_code' placeholder="请输入验证码" required class="verify-code">
+
+                <span id="code_show" style="
+                 color: rgb(19, 78, 150 );
+                font-weight: bold;
+                cursor: pointer;
+                background-color: #e8f5e9;
+                font-size:30px;
+                text-align:center;
+                padding-left:20px;
+                padding-right:20px;
+                padding-top:5px;
+                padding-bottom:5px;
+                left:300px;
+                top:360px;
+                position:absolute;
+                " onclick="window.location.reload()">{{ verification_code }}</span>
+            </div>
+            <button type="submit" class="submit2">
+                注册
+            </button>
+            <p> </p>
+            <p> </p>
+            <p class="signup-link">
+                已有账户？
+                <a href="{{ url_for('log_in') }}">登录获得更多精彩(｡・ω・｡)</a>
+            </p>
+            <!--忘记密码部分 -->
+             <p class="forget">
+                <!--要搭一个忘记密码路由 -->
+                <a href="{{ url_for('forget') }}">忘记密码？</a>
+            </p>
+        </form>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="{{url_for('static',filename='jquery-4.0.0.min.js')}}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var index = 0;//标记图片索引
+            var timer;
+            show();
+            $(".push").eq(0).css("background-color", "rgba(0, 0, 0,0.5)");
+
+            function show() {
+                timer = setInterval(function () {
+                    index++;//索引++
+                    index %= 5;//写$(".img").length也行，跟5一样的
+                    $(".img").css("opacity", "0");//全设为不见的
+                    $(".img").eq(index).css("opacity", "1");
+                    $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                    $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                }, 5000);
+            }
+
+            $(".change_left").click(function () {
+                clearInterval(timer);//定时器清除
+                index--;
+                if (index == -1) index = 4;
+                index %= 5;//写$(".img").length也行，跟5一样的
+                $(".img").css("opacity", "0");//全设为不见的
+                $(".img").eq(index).css("opacity", "1");
+                $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                show();
+            })
+
+            $(".change_right").click(function () {
+                clearInterval(timer);
+                index++;
+                index %= 5;//写$(".img").length也行，跟5一样的
+                $(".img").css("opacity", "0");//全设为不见的
+                $(".img").eq(index).css("opacity", "1");
+                $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                show();
+            })
+
+            $(".push").click(function () {
+                clearInterval(timer);
+                index = $(this).index();
+                $(".img").css("opacity", "0");//全设为不见的
+                $(".img").eq(index).css("opacity", "1");
+                $(".push").css("background-color", "rgba(255, 255, 255, 0.8)");
+                $(".push").eq(index).css("background-color", "rgba(0, 0, 0,0.5)");
+                show();
+            })
+        })
+
+        // ========== 提示框函数 + 表单验证逻辑 ==========
+        function showFlashMessage(message, category = 'success') {
+            // 先清空原有提示框
+            $('#flash-container').empty();
+            // 创建提示框元素
+            const flashDiv = document.createElement('div');
+            flashDiv.className = `flash-message flash-${category}`;
+            flashDiv.textContent = message;
+
+            // 添加到表单上方的容器
+            const container = document.getElementById('flash-container');
+            container.appendChild(flashDiv);
+
+            // 显示提示框
+            flashDiv.style.display = 'block';
+            flashDiv.style.opacity = 0;
+            setTimeout(() => {
+                flashDiv.style.opacity = 1;
+                flashDiv.style.transition = 'opacity 0.3s ease';
+            }, 10);
+
+            // 3秒后自动隐藏提示框
+            setTimeout(() => {
+                flashDiv.style.opacity = 0;
+                setTimeout(() => flashDiv.remove(), 300);
+            }, 3000);
+        }
+
+        // 表单提交验证逻辑
+        $('.submit2').click(function(e) {
+    // 2. 只做前端验证提示，验证失败就return，验证成功则让表单正常提交给后端
+    const username = $('input[name="username"]').val().trim();
+    const email = $('.email').val().trim();
+    const password = $('.pwd').val().trim();
+    const confirmPwd = $('.confirm-pwd').val().trim();
+    const verifyCode = $('.verify-code').val().trim();
+    const showCode = $('#code_show').text().trim();
+
+    // 前端验证（只提示，不阻止成功的提交）
+    if (!username) {
+        showFlashMessage('用户名不能为空！', 'error');
+        return false; // 阻止提交
+    }
+    if (!email) {
+        showFlashMessage('邮箱不能为空！', 'error');
+        return false; // 阻止提交
+    }
+    if (password !== confirmPwd) {
+        showFlashMessage('两次输入的密码不一致！', 'error');
+        return false; // 阻止提交
+    }
+    if (!password) {
+        showFlashMessage('密码不能为空！', 'error');
+        return false; // 阻止提交
+    }
+    if (verifyCode !== showCode) {
+        showFlashMessage('验证码输入错误！', 'error');
+        return false; // 阻止提交
+    }
+
+    // 验证通过 → 不return，让表单正常提交给后端，由后端跳转
+    showFlashMessage('正在提交注册信息...', 'success');
+});
+    </script>
+</body>
+</html>

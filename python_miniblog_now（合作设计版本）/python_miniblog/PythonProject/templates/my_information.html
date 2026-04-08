@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我ξ( ✿＞◡❛)</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='my_web.css') }}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            z-index: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        h4 {
+            font-size: 25px;
+            color: rgb(0, 0, 0);
+            top: 30px;
+            left: 20px;
+            position: absolute;
+        }
+
+        .forward {
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            left: 0;
+            margin: 0;
+            z-index: 1;
+        }
+
+        .forward_word {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            z-index: 2;
+        }
+
+        .top {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            z-index: 3;
+        }
+
+        .skip {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .skip li {
+            color: white;
+        }
+
+        .skip li a {
+            /*让点击后不会变成紫色的*/
+            color: white;
+            text-decoration: none;
+        }
+
+        .column_left {
+            height: 100%;
+            width: 320px;
+            position: fixed;
+            z-index: 1;
+            background-color: rgb(141, 220, 244);
+            border-radius: 0px 0px 10px 10px;
+            top: 50px;
+        }
+
+        .silk {
+            width: 50px;
+            height: 150px;
+            z-index: 5;
+            background-color: sienna;
+            left: 120px;
+            position: fixed;
+        }
+
+        .silk_circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: sienna;
+            position: fixed;
+            left: 120px;
+            top: 170px;
+        }
+
+        .silk_left {
+            width: 10px;
+            height: 200px;
+            z-index: 5;
+            background-color: sienna;
+            left: 450px;
+            position: fixed;
+            position: absolute;
+        }
+
+        .silk_right {
+            width: 10px;
+            height: 150px;
+            z-index: 5;
+            background-color: sienna;
+            left: 1600px;
+            position: fixed;
+            position: absolute;
+            top: 50px;
+        }
+
+        .biaozhi {
+            position: absolute;
+            top: 600px;
+            left: 10%;
+            cursor: pointer;
+        }
+
+        .show {
+            width: 1300px;
+            height: 760px;
+            background-color: rgba(91, 165, 250, 0.315);
+            position: relative;
+            border-radius: 10px;
+            top: 170px;
+            z-index: 3;
+            left: 370px;
+        }
+
+        .blog-title {
+            font-size: 40px;
+            font-family: 'Times New Roman', Times, serif;
+            color: rgb(28, 121, 252);
+            top: 30px;
+            left: 15px;
+            position: absolute;
+        }
+
+        .white {
+            background-color: white;
+            width: 30px;
+            height: 15px;
+            position: absolute;
+            top: 15px;
+            left: 70px;
+            border-radius: 2px;
+        }
+
+        .white2 {
+            background-color: white;
+            width: 30px;
+            height: 15px;
+            position: absolute;
+            top: 15px;
+            left: 1220px;
+            border-radius: 2px;
+        }
+
+        .touxiang {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            object-fit: cover;
+            object-position: center;
+            top: 90px;
+            left: 170px;
+            border: 2px solid white;
+        }
+
+        .skip {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* 弹窗样式 */
+        .alert_box{
+            position: absolute;
+            display: flex;
+            z-index: 50;
+            height: 300px;
+            width: 500px;
+            background-color: rgba(120, 210, 240, 0.831);
+            top: 30%;
+            border-radius: 10px;
+            left: 37%;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* 设置一个黑框 */
+        .whole {
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.477);
+            z-index: 150;
+            display: flex;
+            position: fixed;
+        }
+
+        .check {
+            font-size: 35px;
+            color: rgb(0, 0, 0);
+            top: 35%;
+            left: 45%;
+            position: fixed;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏-->
+    <div class="forward">
+        <h6 class="forward_word">畅享所言</h6>
+        <div class="top">
+            <ul class="skip" type="none">
+                <li><a href="{{ url_for('page', username=username) }}" id="move_for">广场 </a><span>|</span></li>
+                <li><a href="{{ url_for('page', username=username) }}" id="move_for2">个人博客 </a><span>|</span></li>
+                <li><a href="{{ url_for('my_information', username=username) }}" id="move_for3">关于我 </a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 左侧蓝色栏 -->
+    <div class="column_left">
+        <div class="silk"></div>
+        <div class="silk_circle"></div>
+        <!-- 炫酷方块 -->
+        <div class="spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <!-- 发帖按钮 -->
+        <button2 onclick="location.href='{{ url_for('post', username=username) }}'" >
+            <h2 class="post">发布你的帖子吧！</h2>
+        </button2>
+        <img src="{{ url_for('static', filename='image/picture.png') }}" width="250px" height="250px" class="biaozhi">
+    </div>
+
+    <!-- 中间大工牌信息展示 -->
+    <div class="silk_left"></div>
+    <div class="silk_right"></div>
+    <div class="show" id="father_box">
+        <div class="white"></div>
+        <div class="white2"></div>
+        <h2 class="blog-title">个人信息</h2>
+        <h4 style="top:120px">头像：</h4>
+        <img src="{{ url_for('static', filename='image/look.jpg') }}" class="touxiang">
+        <h4 style="top:270px">昵称：{{ username }}</h4> <!-- 动态用户名 -->
+        <h4 style="top:370px">组别：{{ group }}</h4> <!-- 动态组别 -->
+        <h4 style="top:470px">注册邮箱：{{ email }}</h4> <!-- 动态邮箱 -->
+        <h4 style="top:570px">注册时间：{{ reg_time }}</h4> <!-- 动态注册时间 -->
+        <h4 style="top:670px">个性签名：{{ signature }}</h4> <!-- 动态签名 -->
+        <!-- 按钮1:修改信息（ -->
+        <button class="cta">
+            <span class="hover-underline-animation">修改信息</span>
+            <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10" viewBox="0 0 46 16">
+                <path id="Path_10" data-name="Path 10"
+                    d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" transform="translate(30)">
+                </path>
+            </svg>
+        </button>
+        <!-- 按钮2：退出登录（ -->
+        <button class="cta" style="left:80%;bottom:10%">
+            <span class="hover-underline-animation"><a href="{{ url_for('log_in') }}" id="return">退出登录</a></span>
+            <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
+                viewBox="0 0 46 16">
+                <path id="Path_10" data-name="Path 10"
+                    d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
+                    transform="translate(30)">
+                </path>
+            </svg>
+        </button>
+
+    </div>
+    <script>
+        // 处理是否退出登录逻辑
+        var return_btn = document.getElementById("return");
+        return_btn.onclick = function () {
+            event.preventDefault();//停止跳转
+
+            const background = document.createElement('div');//新的背景盒子
+            background.className = "whole";
+            document.body.appendChild(background);//显示全局
+
+            const new_box = document.createElement('div');//新的盒子
+            new_box.className = "alert_box";
+            background.appendChild(new_box);
+            const check = document.createElement('h3');
+            check.innerHTML = "确认退出登录？";
+            check.className = "check";
+            new_box.appendChild(check);
+
+            // 把按钮往里加一下
+            const button_left = `
+    <div class="return" >
+        <button3 style="left:5%;" onclick="window.location.href='{{ url_for('log_in') }}'">
+            <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+                <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+                </path>
+            </svg>
+            <span class="button3_word">退出登录</span>
+        </button3>
+    </div>`;
+            const button_right = `
+    <div class="return" >
+        <button3 style="left:65%;" onclick="window.location.href='{{ url_for('my_information', username=username) }}'">
+            <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+                <path transform="rotate(180 512 512)" d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+                </path>
+            </svg>
+            <span class="button3_word">返回页面</span>
+        </button3>
+    </div>
+`;
+            new_box.innerHTML += button_left + button_right;
+            console.log("弹窗弹出");
+        }
+        var move = document.getElementById("move_for");
+        move.onmouseover = function () {
+            move.style.color = "rgb(146, 222, 245)";
+            move.style.fontWeight = 900;
+        }
+        move.onmouseout = function () {
+            move.style.color = "white";
+            move.style.fontWeight = "normal";
+        }
+
+        let move2 = document.getElementById("move_for2");
+        move2.onmouseover = function () {
+            move2.style.color = "rgb(146, 222, 245)";
+        }
+        move2.onmouseout = function () {
+            move2.style.color = "white";
+        }
+
+        let move3 = document.getElementById("move_for3");
+        move3.onmouseover = function () {
+            move3.style.color = "rgb(146, 222, 245)";
+        }
+        move3.onmouseout = function () {
+            move3.style.color = "white";
+        }
+    </script>
+</body>
+
+</html>
