@@ -1,4 +1,5 @@
 关于程序如何运行
+<<<<<<< HEAD
 第一步：将改后的文件更新到本地
 第二步：启动后端服务  
 输入cd C:\Users\lenovo\MiniBlogHub\backend（例子，即你的backend文件夹所在位置）
@@ -6,3 +7,6 @@
 当看到Running on http://127.0.0.1:5000字样出现时，说明后端启动成功（不要关闭这个 PowerShell 窗口）
 第三步：双击frontend/index.html  你就进入主页了，注册一个账号，
 你可以看到主包发的第一个帖子，快来发帖
+=======
+拉取文件包，pycharm打开，下载相关插件包，app.py运行，点开网址即可使用
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab

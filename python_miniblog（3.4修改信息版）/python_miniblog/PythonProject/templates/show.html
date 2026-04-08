@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/page.css">
     <link rel="stylesheet" href="/static/show.css">
     <style>
+<<<<<<< HEAD
         /* 🔥 修复：永远不会露底色消失 */
         body {
             background-color: #b3e0f9;
@@ -25,6 +26,8 @@
             padding-bottom: 100px;
         }
 
+=======
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         @keyframes change {
             0% {
                 top: 300px;
@@ -87,6 +90,10 @@
         }
 
         .skip li a {
+<<<<<<< HEAD
+=======
+            /*让点击后不会变成紫色的*/
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             color: white;
             text-decoration: none;
         }
@@ -212,6 +219,10 @@
             font-size: 15px;
         }
 
+<<<<<<< HEAD
+=======
+        /* 弹窗样式 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         .alert_box{
             position: absolute;
             display: flex;
@@ -225,6 +236,10 @@
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
         }
 
+<<<<<<< HEAD
+=======
+        /* 设置一个黑框 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         .whole {
             top: 0;
             left: 0;
@@ -244,6 +259,11 @@
             position: fixed;
         }
 
+<<<<<<< HEAD
+=======
+
+        /* 提示框样式 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         #flash-container {
             position: fixed;
             left: 50%;
@@ -275,16 +295,27 @@
             border: 1px solid #c8e6c9;
         }
 
+<<<<<<< HEAD
+=======
+        /* 评论列表容器 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         .comments-container {
             position: absolute;
             width: 1250px;
             left: 50px;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
     </style>
 </head>
 
 <body>
+<<<<<<< HEAD
+=======
+    <!-- 导航栏 -->
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
     <div class="forward">
         <h6 class="forward_word">畅享所言</h6>
         <div class="top">
@@ -296,8 +327,15 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <div id="flash-container"></div>
 
+=======
+    <!-- 提示框容器 -->
+    <div id="flash-container"></div>
+
+    <!--工牌（个人信息）-->
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
      <div class="gongpai">
         <div class="silk"></div>
         <div class="open1"> </div>
@@ -309,6 +347,10 @@
         <h3 class="grade">个性签名：{{ signature }}</h3>
         <img src="/static/image/picture.png" width="250px" height="250px" class="biaozhi">
         <button onclick="location.href='{{ url_for('post') }}'" class="button_p">
+<<<<<<< HEAD
+=======
+        <!--发布页面路由-->
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             <h2 class="post">发布你的帖子吧！</h2>
         </button>
     </div>
@@ -329,6 +371,10 @@
             <div class="blog-content_post" id="textContent"></div>
             <img src="{{ post.author.avatar if post.author and post.author.avatar else '/static/image/look.jpg' }}" width="130px" height="130px" class="biaozhi2">
 
+<<<<<<< HEAD
+=======
+            <!-- 点赞按钮 -->
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             <label class="container">
                 <input type="checkbox" id="collectCheck">
                 <svg id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve"
@@ -343,6 +389,10 @@
                 <h4 class="icon-num2" id="collectNum">{{ post.collect_count }}</h4>
             </label>
 
+<<<<<<< HEAD
+=======
+            <!-- 收藏按钮 -->
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             <label class="container2">
                 <input type="checkbox" id="likeCheck">
                 <svg height="24px" id="Layer_1" version="1.2" viewBox="0 0 24 24" width="24px" xml:space="preserve"
@@ -368,6 +418,7 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <h2 class="blog-title-review" id="review">评论区</h2>
         <div class="comments-container" id="commentsContainer">
             {% if comments %}
@@ -377,12 +428,28 @@
 <div class="blog-content-review" id="comment-{{ comment.id }}" style="--comment-index: {{ loop.index }};">
                     <h5 class="author-review">发布者：{{ comment.user.username }}</h5>
                     <h5 class="time-review">发布时间：{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</h5>
+=======
+        <!-- 评论区标题 -->
+        <h2 class="blog-title-review" id="review">评论区</h2>
+
+        <!-- 评论区容器 - 动态添加评论 -->
+        <div class="comments-container" id="commentsContainer">
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="blog-content-review" id="comment-{{ comment.id }}" style="position: relative; margin-bottom: 20px;">
+                    <h5 class="author-review">发布者：{{ comment.user.username }}</h5>
+                    <h5 class="time-review" style="color: #666;">发布时间：{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</h5>
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                     <p class="box-content-review">
                         {{ comment.content }}
                     </p>
                     <img src="{{ comment.author_avatar }}" width="40px" height="40px" class="biaozhi2-review">
 
                     {% if comment.user.username == username %}
+<<<<<<< HEAD
+=======
+                    <!-- 删除按钮 -->
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                     <button aria-label="Delete item" class="delete-button" onclick="showDeleteCommentConfirm('{{ comment.id }}', '{{ post.id }}')">
                         <svg class="trash-svg" viewBox="0 -10 64 74" xmlns="http://www.w3.org/2000/svg">
                             <g id="trash-can">
@@ -432,8 +499,15 @@
             move3.style.color = "white";
         }
 
+<<<<<<< HEAD
         const backendText = `{{ post.content }}`;
 
+=======
+        // 1. 后端返回的文本
+        const backendText = `{{ post.content }}`;
+
+        // 2. 核心函数：分割文本+计算行数
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         function splitTextByLength(text, charCount = 35) {
             let result = '';
             let lineCount = 0;
@@ -445,6 +519,10 @@
             return { processedText: result, lineCount: lineCount };
         }
 
+<<<<<<< HEAD
+=======
+        // 3. 计算段落高度的函数
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         function calcTextHeight(lineCount) {
             const fontSize = 23;
             const lineHeight = 1.8;
@@ -453,6 +531,7 @@
             return textTotalHeight;
         }
 
+<<<<<<< HEAD
         let initialReviewTop = 0;
         let initialCommentsContainerTop = 0;
 
@@ -461,6 +540,24 @@
             document.getElementById('textContent').innerHTML = processedText;
 
             const textHeight = calcTextHeight(lineCount);
+=======
+        // 保存初始位置
+        let initialReviewTop = 0;
+        let initialCommentsContainerTop = 0;
+
+        // 4. 初始化：仅控制.blog-content-ani的动画
+        function initAnimation() {
+            // 步骤1：分割文本并插入页面
+            const { processedText, lineCount } = splitTextByLength(backendText, 35);
+            document.getElementById('textContent').innerHTML = processedText;
+
+            // 步骤2：计算段落高度
+            const textHeight = calcTextHeight(lineCount);
+            console.log('段落行数：', lineCount);
+            console.log('段落高度：', textHeight + 'px');
+
+            // 步骤3：获取元素
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             const blogContentAniBox = document.querySelector('.blog-content-ani');
             const author = document.querySelector('.author');
             const time = document.querySelector('.time');
@@ -469,10 +566,18 @@
             const review = document.querySelector('#review');
             const commentsContainer = document.querySelector('#commentsContainer');
 
+<<<<<<< HEAD
+=======
+            // 步骤4：计算小盒子的最终高度
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             const baseHeight = 200;
             const finalContentAniHeight = baseHeight + textHeight;
             const base = 150;
 
+<<<<<<< HEAD
+=======
+            // 步骤5：设置初始位置
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             blogContentAniBox.style.height = `${finalContentAniHeight}px`;
             blogContentAniBox.style.width = '1250px';
             author.style.top = `${textHeight + base}px`;
@@ -480,14 +585,29 @@
             container.style.top = `${textHeight + base-5}px`;
             container2.style.top = `${textHeight + base - 65}px`;
 
+<<<<<<< HEAD
+=======
+            // 保存评论区标题和容器的初始位置
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             initialReviewTop = textHeight + base + 150;
             initialCommentsContainerTop = textHeight + base + 200;
             review.style.top = `${initialReviewTop}px`;
             commentsContainer.style.top = `${initialCommentsContainerTop}px`;
+<<<<<<< HEAD
         }
 
         window.onload = initAnimation;
 
+=======
+
+            console.log('小盒子最终高度：', finalContentAniHeight + 'px');
+        }
+
+        // 页面加载完成后执行动画初始化
+        window.onload = initAnimation;
+
+        // 评论按钮逻辑
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         const commentBtn = document.getElementById('commentBtn');
         const commentForm = document.getElementById('commentForm');
         const blogContentAni = document.querySelector('.blog-content-ani');
@@ -500,6 +620,7 @@
             const currentHeight = parseInt(window.getComputedStyle(blogContentAni).height);
 
             if (!isFormShow) {
+<<<<<<< HEAD
                 commentForm.style.display = 'block';
                 blogContentAni.style.height = `${currentHeight + heightDelta}px`;
                 review.style.top = `${initialReviewTop + heightDelta}px`;
@@ -511,11 +632,34 @@
                 blogContentAni.style.height = `${currentHeight - heightDelta}px`;
                 review.style.top = `${initialReviewTop}px`;
                 commentsContainer.style.top = `${initialCommentsContainerTop}px`;
+=======
+                // 显示评论表单
+                commentForm.style.display = 'block';
+                blogContentAni.style.height = `${currentHeight + heightDelta}px`;
+                // 评论区元素同步下移
+                review.style.top = `${initialReviewTop + heightDelta}px`;
+                commentsContainer.style.top = `${initialCommentsContainerTop + heightDelta}px`;
+                // 切换按钮文字和状态
+                commentBtn.innerHTML = '<h2 class="post2">收起评论</h2>';
+                isFormShow = true;
+            } else {
+                // 隐藏评论表单
+                commentForm.style.display = 'none';
+                blogContentAni.style.height = `${currentHeight - heightDelta}px`;
+                // 恢复评论区元素初始位置
+                review.style.top = `${initialReviewTop}px`;
+                commentsContainer.style.top = `${initialCommentsContainerTop}px`;
+                // 切换按钮文字和状态
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                 commentBtn.innerHTML = '<h2 class="post2">评论</h2>';
                 isFormShow = false;
             }
         });
 
+<<<<<<< HEAD
+=======
+        // 评论提交逻辑
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         const submitComment = document.getElementById('submitComment');
         submitComment.addEventListener('click', function () {
             const commentText = document.querySelector('.comment-input').value;
@@ -523,6 +667,10 @@
                 alert('请输入评论内容！');
                 return;
             }
+<<<<<<< HEAD
+=======
+            // 构建表单数据提交到后端
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             const formData = new FormData();
             formData.append('post_id', "{{ post.id }}");
             formData.append('content', commentText);
@@ -533,7 +681,11 @@
                 credentials: 'same-origin'
             }).then(response => {
                 if (response.ok) {
+<<<<<<< HEAD
                     window.location.reload();
+=======
+                    window.location.reload(); // 刷新页面显示新评论
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                 } else {
                     alert('评论提交失败，请重试！');
                 }
@@ -545,17 +697,29 @@
             document.querySelector('.comment-input').value = '';
         });
 
+<<<<<<< HEAD
+=======
+        // ========== 点赞/收藏核心逻辑 ==========
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         const collectCheck = document.getElementById('collectCheck');
         const likeCheck = document.getElementById('likeCheck');
         const collectNum = document.getElementById('collectNum');
         const likeNum = document.getElementById('likeNum');
         const postId = "{{ post.id }}";
 
+<<<<<<< HEAD
+=======
+        // 初始化选中状态
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         const isLiked = {{ 'true' if is_liked else 'false' }};
         const isCollected = {{ 'true' if is_collected else 'false' }};
         likeCheck.checked = isLiked;
         collectCheck.checked = isCollected;
 
+<<<<<<< HEAD
+=======
+        // 封装AJAX请求函数（返回JSON）
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         async function sendLikeCollectRequest(type, postId) {
             try {
                 const response = await fetch(`/post/${type}/${postId}`, {
@@ -573,6 +737,10 @@
             }
         }
 
+<<<<<<< HEAD
+=======
+        // 点赞事件
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         likeCheck.addEventListener('change', async function () {
             const isAdd = this.checked;
             this.disabled = true;
@@ -587,6 +755,10 @@
             this.disabled = false;
         });
 
+<<<<<<< HEAD
+=======
+        // 收藏事件
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         collectCheck.addEventListener('change', async function () {
             const isAdd = this.checked;
             this.disabled = true;
@@ -601,9 +773,17 @@
             this.disabled = false;
         });
 
+<<<<<<< HEAD
         let currentCommentId;
         let currentPostId = "{{ post.id }}";
 
+=======
+        // ========== 删除评论相关逻辑 ==========
+        let currentCommentId;
+        let currentPostId = "{{ post.id }}";
+
+        // 显示删除评论确认弹窗
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         function showDeleteCommentConfirm(commentId, postId) {
             currentCommentId = commentId;
             currentPostId = postId;
@@ -625,7 +805,12 @@
             <div class="return" >
                 <button3 style="left:5%;" onclick="deleteComment()">
                     <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" style="left:0%;color=black;">
+<<<<<<< HEAD
                         <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path>
+=======
+                        <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+                        </path>
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                     </svg>
                     <span class="button3_word">删除</span>
                 </button3>
@@ -635,7 +820,12 @@
             <div class="return" >
                 <button3 style="left:65%;" onclick="document.querySelector('.whole').remove()">
                     <svg height="40" width="40" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" style="left:0%;color=black;">
+<<<<<<< HEAD
                         <path transform="rotate(180 512 512)" d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path>
+=======
+                        <path transform="rotate(180 512 512)" d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021 7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+                        </path>
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                     </svg>
                     <span class="button3_word">返回</span>
                 </button3>
@@ -645,6 +835,10 @@
             new_box.innerHTML += button_left + button_right;
         }
 
+<<<<<<< HEAD
+=======
+        // 删除评论函数
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         function deleteComment() {
             fetch('/delete_comment', {
                 method: 'POST',
@@ -657,13 +851,26 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+<<<<<<< HEAD
                     document.querySelector('.whole').remove();
+=======
+                    // 关闭弹窗
+                    document.querySelector('.whole').remove();
+                    // 移除评论元素
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                     const commentElement = document.getElementById(`comment-${currentCommentId}`);
                     if (commentElement) {
                         commentElement.remove();
                     }
+<<<<<<< HEAD
                     showFlashMessage('评论删除成功！', 'success');
                 } else {
+=======
+                    // 显示成功提示
+                    showFlashMessage('评论删除成功！', 'success');
+                } else {
+                    // 显示失败提示
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
                     showFlashMessage('删除失败：' + data.msg, 'error');
                     document.querySelector('.whole').remove();
                 }
@@ -675,6 +882,10 @@
             });
         }
 
+<<<<<<< HEAD
+=======
+        // 显示提示框函数
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         function showFlashMessage(message, category = 'success') {
             document.getElementById('flash-container').innerHTML = '';
             const flashDiv = document.createElement('div');
@@ -697,9 +908,17 @@
             }, 3000);
         }
 
+<<<<<<< HEAD
+=======
+        // 暴露函数给全局
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
         window.showDeleteCommentConfirm = showDeleteCommentConfirm;
         window.deleteComment = deleteComment;
         window.showFlashMessage = showFlashMessage;
     </script>
 </body>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 </html>

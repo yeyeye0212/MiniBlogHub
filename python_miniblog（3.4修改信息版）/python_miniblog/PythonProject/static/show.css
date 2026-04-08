@@ -118,6 +118,10 @@
     z-index: 4;
     box-shadow: 2px 2px 4px #99999988;
     animation: change2 1s linear 0s;
+<<<<<<< HEAD
+=======
+    /* 动画改在JavaScript里面 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 }
 
 @keyframes change2 {
@@ -139,6 +143,10 @@
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .box-content-show {
     font-size: 25px;
     position: absolute;
@@ -155,6 +163,10 @@
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .container input {
     position: absolute;
     opacity: 0;
@@ -190,6 +202,12 @@ svg:hover {
     fill: #2196F3;
 }
 
+<<<<<<< HEAD
+=======
+/*收藏 */
+
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .container2 input {
     position: absolute;
     opacity: 0;
@@ -262,6 +280,10 @@ button_squ:active {
     font-family: 'Times New Roman', Times, serif;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 input:focus,
 textarea:focus,
 button:focus {
@@ -270,6 +292,7 @@ button:focus {
     box-shadow: 0 0 0 4px #b5c9fc;
 }
 
+<<<<<<< HEAD
 .comment-form {
     margin: 20px 0;
     padding: 15px;
@@ -277,6 +300,21 @@ button:focus {
     display: none;
 }
 
+=======
+
+/* 评论 */
+
+.comment-form {
+    margin: 20px 0;
+    padding: 15px;
+
+    border-radius: 5px;
+    display: none;
+    /* 默认隐藏 */
+}
+
+/* 评论输入框样式 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .comment-input {
     width: 1000px;
     height: 80px;
@@ -285,11 +323,19 @@ button:focus {
     border-radius: 5px;
     font-size: 18px;
     resize: none;
+<<<<<<< HEAD
+=======
+    /* 禁止拖动大小 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
     margin-bottom: 10px;
     position: absolute;
     bottom: 10%;
 }
 
+<<<<<<< HEAD
+=======
+/* 提交按钮样式 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .submit-btn {
     padding: 6px 12px;
     border: none;
@@ -322,6 +368,10 @@ button:focus {
     line-height: 1;
 }
 
+<<<<<<< HEAD
+=======
+/* 评论 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .blog-content-review {
     position: absolute;
     height: 150px;
@@ -346,6 +396,7 @@ button:focus {
     color: rgb(72, 157, 241);
     bottom: 10px;
     position: absolute;
+<<<<<<< HEAD
     left: 30%;
     font-weight:400;
 }
@@ -369,12 +420,22 @@ button:focus {
 
     padding-bottom: 20px;
 }
+=======
+    left: 20%;
+    font-weight:400;
+}
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .box-content-review {
     font-size: 19px;
     position: absolute;
     top: 50px;
     left: 20px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .biaozhi2-review {
     position: absolute;
     bottom: 5px;
@@ -382,6 +443,10 @@ button:focus {
     border-radius: 25px;
 }
 
+<<<<<<< HEAD
+=======
+/* 删除按钮样式修复 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .delete-button-review {
     position: absolute;
     padding: 5px;
@@ -390,7 +455,11 @@ button:focus {
     cursor: pointer;
     font-size: 1em;
     transition: transform 0.2s ease;
+<<<<<<< HEAD
     right: 5%;
+=======
+    right: 5%;  /* 改为 right 定位 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
     top: 50%;
     transform: translateY(-50%);
     width: 40px;
@@ -439,6 +508,10 @@ button3:hover {
 
 .button3_word {
     font-size: 20px;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 }
 
 .trash-svg {
@@ -468,7 +541,10 @@ button3:hover {
 .delete-button:active .trash-svg {
   transform: scale(0.96) rotate(-1deg);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
 .delete-button {
     position: absolute;
     padding: 5px;
@@ -477,7 +553,11 @@ button3:hover {
     cursor: pointer;
     font-size: 1em;
     transition: transform 0.2s ease;
+<<<<<<< HEAD
     right: 5%;
+=======
+    right: 5%;  /* 改为 right 定位 */
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
     top: 50%;
     transform: translateY(-50%);
     width: 40px;
@@ -486,4 +566,8 @@ button3:hover {
     align-items: center;
     justify-content: center;
     z-index: 10;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
