@@ -535,10 +535,7 @@ def submit_post():
     username = session['username']
     title = request.form.get('title', '')
     content = request.form.get('content', '')
-<<<<<<< HEAD
     intro = request.form.get('intro','')
-=======
->>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
     category = request.form.get('category', '技术求助')
 
     if not title or not content:
@@ -552,10 +549,7 @@ def submit_post():
             content=content,
             user_id=user.id,
             category=category,
-<<<<<<< HEAD
             intro=intro,
-=======
->>>>>>> 2e7c6fea8c9c312d79768a40298dc84620a0bfab
             like_count=0,
             collect_count=0
         )
