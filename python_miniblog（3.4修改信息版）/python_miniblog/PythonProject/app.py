@@ -535,7 +535,10 @@ def submit_post():
     username = session['username']
     title = request.form.get('title', '')
     content = request.form.get('content', '')
+
     intro = request.form.get('intro','')
+
+
     category = request.form.get('category', '技术求助')
 
     if not title or not content:
